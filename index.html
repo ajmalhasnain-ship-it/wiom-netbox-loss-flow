@@ -130,6 +130,31 @@
     .launch .lb{grid-column:1/-1}
   }
   @media (max-width:400px){ .stage{margin-bottom:-56px} }
+  /* ==== drawer ==== */
+  .drawer{position:absolute;inset:0;z-index:70;display:none}
+  .drawer.on{display:block}
+  .drawer .scrim{position:absolute;inset:0;background:rgba(22,16,33,.42)}
+  .drawer .panel{position:absolute;top:0;left:0;bottom:0;width:266px;background:var(--bg-surface);animation:din .22s ease;display:flex;flex-direction:column;overflow-y:auto}
+  @keyframes din{from{transform:translateX(-40px);opacity:.4}to{transform:none;opacity:1}}
+  .dhead{background:var(--brand-sec);color:#fff;padding:22px 18px 16px}
+  .dhead .nm{font-size:18px;font-weight:700}.dhead .sub{font-size:12px;opacity:.75;margin-top:2px}
+  .drow{display:flex;align-items:center;gap:14px;padding:15px 18px;font-size:16px;cursor:pointer}
+  .drow:active{background:var(--bg-screen)}
+  .drow .di{font-size:19px;width:24px;text-align:center}
+  .drow .dc{margin-left:auto;color:var(--text-hint)}
+  .ddiv{height:1px;background:var(--stroke-1);margin:6px 16px}
+  .dfoot{margin-top:auto;border-top:1px solid var(--stroke-1)}
+  /* ==== inventory ==== */
+  .chips{display:flex;gap:8px;overflow-x:auto;padding:12px 16px 4px}
+  .chips::-webkit-scrollbar{height:0}
+  .chip{flex:0 0 auto;font-size:12.5px;font-weight:600;padding:8px 14px;border-radius:99px;border:1px solid var(--stroke-2);color:var(--text-2);white-space:nowrap}
+  .chip.on{background:var(--brand-tint);border-color:var(--brand);color:var(--brand)}
+  .invrow{display:flex;align-items:center;gap:12px;padding:15px 16px;border-bottom:1px solid var(--stroke-1);cursor:pointer;position:relative}
+  .invrow:active{background:var(--bg-screen)}
+  .invrow .stripe{position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:0 3px 3px 0}
+  .invrow .idn{font-size:15px;font-weight:700}
+  .invrow .st{font-size:13px;color:var(--text-2)}
+  .invrow .fee{margin-left:auto;font-size:13px;color:var(--pending);font-weight:600;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -141,7 +166,7 @@
     <div class="launch">
       <div class="lb">Flows</div>
       <button class="lbtn" onclick="go('home')"><span class="n">⌂</span><div>Home <span class="d">— all banners live</span></div></button>
-      <button class="lbtn" onclick="go('d_detail')"><span class="n">1</span><div>Self-mark lost <span class="d">— charge sheet</span></div></button>
+      <button class="lbtn" onclick="condFlow()"><span class="n">1</span><div>स्थिति बताएं — पूरा फ्लो <span class="d">— ☰ → नेट बॉक्स → सभी → NB-CUST-01 → गुम</span></div></button>
       <button class="lbtn" onclick="go('ag_detail')"><span class="n">2</span><div>Agent recovery <span class="d">— pickup detail</span></div></button>
       <button class="lbtn" onclick="go('al_break','post')"><span class="n">3</span><div>Auto-lost <span class="d">— full 10-box breakdown</span></div></button>
       <button class="lbtn" onclick="go('rf_sheet')"><span class="n">R</span><div>Recovered → refund</div></button>
@@ -157,7 +182,7 @@
       <!-- ===== HOME ===== -->
       <div class="scr on" id="home">
         <div class="sb dark"><span>12:40</span><span class="r"><span>◕</span><span>⛁</span><span>97%</span></span></div>
-        <div class="tbar"><span class="ic" onclick="toast('मेन्यू')">☰</span><span class="tt">Rajesh Kumar<small>एडमिन</small></span><span class="rt"><span class="ic" onclick="toast('डिबग')">🐞</span><span class="ic" onclick="toast('4 नए')">🔔</span></span></div>
+        <div class="tbar"><span class="ic" onclick="openDrawer()">☰</span><span class="tt">Rajesh Kumar<small>एडमिन</small></span><span class="rt"><span class="ic" onclick="toast('डिबग')">🐞</span><span class="ic" onclick="toast('4 नए')">🔔</span></span></div>
         <div class="content"><div class="pad">
           <div style="display:flex;gap:8px;margin-bottom:8px">
             <div class="card" style="flex:1;padding:13px"><div class="k">कनेक्शन</div><div style="font-size:22px;font-weight:700;margin-top:2px">18<span style="font-size:13px;color:var(--text-hint)">/45</span></div></div>
@@ -173,10 +198,42 @@
         </div></div>
       </div>
 
+      <!-- ===== NETBOX HOME ===== -->
+      <div class="scr" id="nb_home">
+        <div class="sb dark"><span>12:43</span><span class="r"><span>◕</span><span>98%</span></span></div>
+        <div class="tbar"><span class="ic" onclick="go('home')">‹</span><span class="tt">नेट बॉक्स</span></div>
+        <div class="content"><div class="pad">
+          <div class="card">
+            <div class="k">कुल नेटबॉक्स</div>
+            <div style="font-size:26px;font-weight:700;margin:2px 0 10px">14</div>
+            <div style="display:flex;height:8px;border-radius:4px;overflow:hidden;margin-bottom:8px"><div style="flex:7;background:#5C5570"></div><div style="flex:4;background:#A7A1B2"></div><div style="flex:3;background:#D7D3E0"></div></div>
+            <div style="font-size:11px;color:var(--text-2)">● ग्राहक के पास 7 &nbsp; ● मेरे पास 4 &nbsp; ● अन्य 3</div>
+            <div style="border-top:1px solid var(--stroke-1);margin-top:12px;padding-top:12px"><span style="color:var(--brand);font-weight:700;font-size:14px" onclick="go('inventory')">सभी नेटबॉक्स देखें ›</span></div>
+          </div>
+          <div class="sec">अभी ध्यान दें</div>
+          <div class="att"><div><div class="t">कैरी फीस लग रही है</div><div class="s">अब तक ₹170 · रोज़ ₹6 लग रही</div></div><span class="c" style="color:var(--pending)">2<small>नेटबॉक्स</small></span></div>
+          <div class="att"><div><div class="t">रिकवरी में</div><div class="s">ग्राहक से वापस लाएँ, वरना नुकसान</div></div><span class="c" style="color:var(--info)">1<small>नेटबॉक्स</small></span></div>
+          <div class="bn bn-warn" style="margin-top:8px" onclick="go('ag_detail')"><div class="bic">🚚</div><div><div class="bt">व्योम एजेंट नेटबॉक्स लेने आ रहा है</div><div class="bd">4 खाली नेटबॉक्स तैयार रखें।</div></div><span class="cv">›</span></div>
+          <div class="sec">नेटबॉक्स वापसी</div>
+          <div class="att" onclick="toast('वापसी')"><div><div class="t">नेट बॉक्स वापस लें</div><div class="s">कस्टमर ने लौटाया</div></div><span class="cv" style="font-size:20px;color:var(--brand)">›</span></div>
+          <div class="att" onclick="toast('एक से अधिक')"><div><div class="t">एक से अधिक वापसी</div><div class="s">कई नेटबॉक्स लौटाएं</div></div><span class="cv" style="font-size:20px;color:var(--brand)">›</span></div>
+        </div></div>
+      </div>
+
+      <!-- ===== INVENTORY (सभी नेट बॉक्स) ===== -->
+      <div class="scr" id="inventory">
+        <div class="sb dark"><span>12:44</span><span class="r"><span>◕</span><span>98%</span></span></div>
+        <div class="tbar"><span class="ic" onclick="go('nb_home')">‹</span><span class="tt">सभी नेट बॉक्स</span><span class="ic" onclick="toast('खोजें')">🔍</span></div>
+        <div class="chips">
+          <span class="chip on">सभी · 18</span><span class="chip">सेटअप बाकी · 2</span><span class="chip">ग्राहक के पास · 1</span><span class="chip">रिटर्न · 3</span>
+        </div>
+        <div class="content" id="invlist"></div>
+      </div>
+
       <!-- ===== DEVICE DETAIL (Flow 1 start) ===== -->
       <div class="scr" id="d_detail">
         <div class="sb dark"><span>12:41</span><span class="r"><span>◕</span><span>97%</span></span></div>
-        <div class="tbar"><span class="ic" onclick="go('home')">‹</span><span class="tt">NB-CUST-01</span><span class="ic" onclick="toast('⋮')">⋮</span></div>
+        <div class="tbar"><span class="ic" onclick="go('inventory')">‹</span><span class="tt">NB-CUST-01</span><span class="ic" onclick="toast('⋮')">⋮</span></div>
         <div class="content"><div class="pad">
           <div class="bn bn-pos" style="cursor:default"><div class="bic">📦</div><div><div class="bt">सेटअप बाकी है</div><div class="bd">कनेक्शन पर लगाएं</div></div></div>
           <div class="card"><div class="card-id">क्या करें</div><div class="gap8"></div><div class="body2">नए कनेक्शन पर इस नेटबॉक्स का इस्तेमाल करें। आप इसे व्योम को वापस भी कर सकते हैं।</div><div class="gap8"></div><div class="card-id" style="color:var(--brand)">90 दिनों से यह आपके पास है</div></div>
@@ -333,6 +390,20 @@
         </div>
       </div>
 
+      <!-- ===== HAMBURGER DRAWER ===== -->
+      <div class="drawer" id="drawer">
+        <div class="scrim" onclick="closeDrawer()"></div>
+        <div class="panel">
+          <div class="dhead"><div class="nm">Rajesh Kumar</div><div class="sub">CSP-1042 · एडमिन</div></div>
+          <div class="drow" onclick="closeDrawer();go('nb_home')"><span class="di">📡</span><span>नेट बॉक्स</span><span class="dc">›</span></div>
+          <div class="drow" onclick="closeDrawer();toast('टीम')"><span class="di">👥</span><span>टीम</span><span class="dc">›</span></div>
+          <div class="ddiv"></div>
+          <div class="drow" onclick="closeDrawer();toast('सेटिंग्स')"><span class="di">⚙️</span><span>सेटिंग्स</span><span class="dc">›</span></div>
+          <div class="drow" onclick="closeDrawer();toast('ट्रस्ट लाइन')"><span class="di">📞</span><span>ट्रस्ट लाइन</span><span class="dc">›</span></div>
+          <div class="dfoot"><div class="drow" onclick="closeDrawer();toast('Debug')"><span class="di">🐞</span><span>Debug</span></div></div>
+        </div>
+      </div>
+
       <div class="toast" id="toast"></div>
     </div></div>
     <div class="navdot"><span style="font-size:11px;color:var(--page-ink2)">tap banners · options · CTAs — the back arrow works</span></div>
@@ -347,6 +418,24 @@
     ["NB-IDLE-06","ONT · 40 महीने · 36+ (20%)","378"],["NB-CUST-04","ONT · 5 महीने · 0–12 (100%)","1,888"],
     ["NB-IDLE-07","राउटर · 6 महीने · 0–12 (100%)","1,062"],["NB-IDLE-08","राउटर · 44 महीने · 36+ (20%)","212"]
   ];
+  // drawer
+  function openDrawer(){document.getElementById('drawer').classList.add('on')}
+  function closeDrawer(){document.getElementById('drawer').classList.remove('on')}
+  // inventory rows — [id, status, stripe-colour, fee]
+  var INV=[
+    ["NB-CUST-01","सेटअप बाकी है","#A7A1B2",""],["NB-CUST-02","सेटअप बाकी है","#E2B203",""],
+    ["NB-CUST-03","वापस होने की प्रक्रिया में","#B85C00",""],["NB-DEPL-01","ग्राहक के पास","#A7A1B2",""],
+    ["NB-RECV-01","कस्टमर से वापस लाना है","#6D17CE",""],["NB-RETR-01","वापस होने की प्रक्रिया में","#B85C00","₹2/दिन"],
+    ["NB-IDLE-01","खाली","#A7A1B2",""],["NB-IDLE-02","खाली","#E2B203",""],
+    ["NB-IDLE-03","खाली","#E2B203","₹5/दिन"],["NB-IDLE-04","वापस होने की प्रक्रिया में","#D92130",""],
+    ["NB-WOFF-01","राइट-ऑफ़","#D7D3E0",""],["NB-LOST-01","गुम बताया गया","#B85C00",""],
+    ["NB-LOST-02","गुम बताया गया","#B85C00",""],["NB-DMGD-01","खराब","#C2410C",""]
+  ];
+  document.getElementById('invlist').innerHTML=INV.map(function(r){
+    var fee=r[3]?'<span class="fee">'+r[3]+'</span>':'';
+    var tap=r[0]==='NB-CUST-01'?"go('d_detail')":"toast('इस डेमो में NB-CUST-01 खोलें — गुम मार्क करें')";
+    return '<div class="invrow" onclick="'+tap+'"><span class="stripe" style="background:'+r[2]+'"></span><div><div class="idn">'+r[0]+'</div><div class="st">'+r[1]+'</div></div>'+fee+'</div>';
+  }).join('');
   document.getElementById('al_list').innerHTML=AUTO.map(function(b){
     return '<div class="brkrow"><div><div class="nm">'+b[0]+'</div><div class="m2">'+b[1]+'</div></div><span class="av">₹'+b[2]+'</span></div>';
   }).join('');
@@ -365,7 +454,9 @@
   var tmr;
   function toast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(tmr);tmr=setTimeout(function(){t.classList.remove('show')},1400)}
   // refund launcher opens sheet over home
+  function condFlow(){ go('home'); openDrawer(); }
   function go(id,mode){
+    closeDrawer();
     if(id==='rf_sheet'){ document.querySelectorAll('.scr').forEach(function(s){s.classList.remove('on')}); document.getElementById('home').classList.add('on'); openSheet('sh_refund'); return; }
     document.querySelectorAll('.scr').forEach(function(s){s.classList.remove('on')});
     var el=document.getElementById(id); if(!el){document.getElementById('home').classList.add('on');return;}
