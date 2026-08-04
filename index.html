@@ -117,6 +117,19 @@
   @keyframes up{from{transform:translateY(30px);opacity:.6}to{transform:none;opacity:1}}
   .handle{width:36px;height:4px;border-radius:2px;background:var(--stroke-2);margin:0 auto 6px}
   .navdot{display:flex;gap:5px;justify-content:center;margin-top:12px}
+  /* tap-hint pulse on load */
+  @keyframes hintpulse{0%,100%{box-shadow:0 0 0 0 rgba(217,0,141,0)}50%{box-shadow:0 0 0 5px rgba(217,0,141,.28)}}
+  .bn.hint{animation:hintpulse 1.5s ease 3}
+  /* ==== mobile-first: phone front & centre, launcher below ==== */
+  @media (max-width:860px){
+    .wrap{flex-direction:column;align-items:center;gap:18px;padding:16px 10px 60px}
+    .stage{order:1;width:100%;transform:scale(min(1,calc((100vw - 20px)/378)));transform-origin:top center}
+    .side{order:2;position:static;width:100%;max-width:420px}
+    .side h1{font-size:24px}.lede{max-width:100%}
+    .launch{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .launch .lb{grid-column:1/-1}
+  }
+  @media (max-width:400px){ .stage{margin-bottom:-56px} }
 </style>
 </head>
 <body>
@@ -151,7 +164,7 @@
             <div class="card" style="flex:1;padding:13px"><div class="k">कमाई</div><div style="font-size:22px;font-weight:700;margin-top:2px">₹10,740</div></div>
           </div>
           <div class="sec">अभी ध्यान दें</div>
-          <div class="bn bn-warn" onclick="go('ag_detail')"><div class="bic">🚚</div><div><div class="bt">व्योम एजेंट नेटबॉक्स लेने आ रहा है</div><div class="bd">4 खाली नेटबॉक्स तैयार रखें। जो नहीं मिलेगा, उसके पैसे कट सकते हैं।</div></div><span class="cv">›</span></div>
+          <div class="bn bn-warn hint" onclick="go('ag_detail')"><div class="bic">🚚</div><div><div class="bt">व्योम एजेंट नेटबॉक्स लेने आ रहा है</div><div class="bd">4 खाली नेटबॉक्स तैयार रखें। जो नहीं मिलेगा, उसके पैसे कट सकते हैं।</div></div><span class="cv">›</span></div>
           <div class="bn bn-warn" onclick="go('al_break','pre')"><div class="bic">⏳</div><div><div class="bt">10 नेटबॉक्स लौटाना बाकी</div><div class="bd">7 दिन में लौटा दें। नहीं तो ये गुम मान लिए जाएंगे और पैसे कट जाएंगे।</div></div><span class="cv">›</span></div>
           <div class="bn bn-crit" onclick="go('al_break','post')"><div class="bic">📦</div><div><div class="bt">10 नेटबॉक्स गुम मान लिए गए</div><div class="bd">अगले 30 दिनों में ₹10,620 कट जाएंगे। पूरा हिसाब देखें।</div></div><span class="cv">›</span></div>
           <div class="bn bn-pos" onclick="go('rf_sheet')"><div class="bic">✓</div><div><div class="bt">NB-CUST-02 वापस मिल गया</div><div class="bd">कटे हुए पैसे वापस किए जा रहे हैं। हिसाब देखें।</div></div><span class="cv">›</span></div>
