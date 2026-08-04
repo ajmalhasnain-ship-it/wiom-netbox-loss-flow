@@ -242,7 +242,7 @@
         </div></div>
         <div style="padding:12px 16px 18px;flex-shrink:0">
           <div class="cta" onclick="toast('वापसी शुरू')">वापस करें</div>
-          <div class="cta ghost" onclick="openSheet('sh_cond')">स्थिति बताएं</div>
+          <div class="cta ghost" onclick="openSheet('sh_charge')">गुम हो गया</div>
         </div>
       </div>
 
@@ -351,21 +351,21 @@
         <div class="sheetc" style="background:var(--bg-surface)">
           <div class="handle"></div>
           <div class="heroic" style="background:var(--brand-tint);width:80px;height:80px;font-size:34px">🛑</div>
-          <div style="text-align:center;font-size:16px;font-weight:700">क्या यह नेटबॉक्स सच में गुम है?</div>
-          <div class="gap8"></div>
-          <div class="body2" style="text-align:center;padding:0 6px">गुम मार्क करने के बाद, अगले 30 दिनों में आपके वॉलेट से ₹1,888 काटे जाएंगे।</div>
-          <div class="brk" style="margin-top:14px;background:var(--bg-screen)">
+          <div style="text-align:center;font-size:16px;font-weight:700;padding:0 6px">नेटबॉक्स गुम करने से पहले ध्यान से पढ़ें</div>
+          <div class="gap24"></div>
+          <div class="body2" style="text-align:center;padding:0 6px;font-weight:600">गुम मार्क करने पर, अगले 30 दिनों में आपके वॉलेट से ₹1,888 काटे जाएंगे</div>
+          <div class="brk" style="margin-top:6px;background:var(--bg-screen)">
             <div style="padding:11px 0">
               <div class="card-id" style="font-size:13px;margin-bottom:5px">कटौती का ब्यौरा</div>
               <div class="body2">डिवाइस प्रकार: ONT</div>
               <div class="body2">उम्र: 3 महीने (0–12 बैंड)</div>
               <div class="body2">₹1,888 × 100% = ₹1,888</div>
             </div>
-            <div class="brkrow" style="border-top:1px solid var(--stroke-1)"><span class="nm">कुल</span><span class="av" style="font-size:16px">₹1,888</span></div>
+            <div class="brkrow" style="border-top:1px solid var(--stroke-1)"><span class="nm">कुल</span><span class="av" style="font-size:16px;color:var(--neg)">₹1,888</span></div>
           </div>
-          <div class="note">पैसे आपके वॉलेट से कटेंगे। कम पड़ने पर बकाया पैसे अगली पेमेंट से काटे जाएंगे।</div>
+          <div class="note">पहले वॉलेट से, फिर अगली पेमेंट से।</div>
           <div class="gap8"></div>
-          <div class="note g">अगर नेटबॉक्स बाद में आपको मिल जाए, दुबारा update करने पर कटे हुए पैसे वापस मिल जाएंगे।</div>
+          <div class="note g">मिल जाए तो पूरे पैसे वापस।</div>
           <div class="cta" onclick="closeSheet();go('done')">हाँ, गुम हो गया है</div>
           <div class="cta tert" onclick="closeSheet()">रुकें</div>
         </div>
