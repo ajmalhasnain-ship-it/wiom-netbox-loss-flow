@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>NetBox Loss — Interactive Prototype</title>
+<style>
+  /* ==== EXACT app tokens (WiomTokens.kt) ==== */
+  :root{
+    --brand:#D9008D; --brand-sec:#4A1535; --brand-tint:#FFE5F6; --brand-stroke:#FFB2E4; --brand-pressed:#A30070;
+    --text-1:#161021; --text-2:#5C5570; --text-hint:#A7A1B2; --text-inv:#FFFFFF; --text-onwarn:#372902;
+    --bg-screen:#FAF9FC; --bg-surface:#FFFFFF; --dialog-bg:#F7F5FA;
+    --bg-warn:#FFF2BF; --bg-warntint:#FFE6CC; --bg-pos:#E1FAED; --bg-neg:#FFE5E7; --bg-info:#F1E5FF; --bg-caution:#FFF8E1;
+    --pos:#008043; --neg:#D92130; --warn:#B85C00; --pending:#FF7F00; --info:#6D17CE; --icon-warn:#E2B203;
+    --stroke-1:#E8E4F0; --stroke-2:#D7D3E0;
+    --deva:"Noto Sans Devanagari","Noto Sans","Inter",system-ui,-apple-system,sans-serif;
+    --mono:"Cascadia Code","Fira Code",Consolas,monospace;
+    /* page chrome */
+    --page:#1b1622; --page-2:#241d2e; --page-ink:#ece7f2; --page-ink2:#a99fb8; --page-line:#342b41;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--deva);background:radial-gradient(1200px 800px at 50% -10%,#2a2136,#171320);color:var(--page-ink);-webkit-font-smoothing:antialiased;min-height:100vh}
+  .wrap{max-width:1180px;margin:0 auto;padding:30px 20px 70px;display:flex;gap:34px;align-items:flex-start;flex-wrap:wrap}
+  .side{flex:1;min-width:280px;position:sticky;top:24px}
+  .eyebrow{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--brand-stroke);margin-bottom:10px}
+  h1{font-family:var(--deva);font-size:30px;font-weight:800;letter-spacing:-.02em;line-height:1.08;max-width:16ch}
+  .lede{margin-top:12px;font-size:14px;color:var(--page-ink2);max-width:44ch;line-height:1.6}
+  .launch{margin-top:26px;display:flex;flex-direction:column;gap:7px}
+  .launch .lb{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--page-ink2);margin:12px 0 3px}
+  .lbtn{display:flex;align-items:center;gap:10px;text-align:left;background:var(--page-2);border:1px solid var(--page-line);color:var(--page-ink);border-radius:11px;padding:11px 13px;font-size:13.5px;font-weight:600;font-family:var(--deva);cursor:pointer;transition:.12s}
+  .lbtn:hover{border-color:var(--brand);transform:translateX(2px)}
+  .lbtn .n{font-family:var(--mono);font-size:11px;color:var(--brand-stroke);width:18px;flex-shrink:0}
+  .lbtn .d{font-size:11px;color:var(--page-ink2);font-weight:400}
+  .hint{margin-top:20px;font-size:11.5px;color:var(--page-ink2);line-height:1.6;border-left:2px solid var(--brand);padding-left:11px}
+
+  /* ==== phone ==== */
+  .stage{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:14px}
+  .device{width:378px;border-radius:44px;background:linear-gradient(160deg,#3a3348,#221c2e);padding:11px;box-shadow:0 40px 80px -30px rgba(0,0,0,.8),0 0 0 2px #4a4358 inset}
+  .phone{width:356px;height:748px;border-radius:34px;overflow:hidden;background:var(--bg-screen);position:relative;font-family:var(--deva);color:var(--text-1)}
+  .notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:120px;height:26px;background:#221c2e;border-radius:0 0 16px 16px;z-index:60}
+  .scr{position:absolute;inset:0;display:none;flex-direction:column;background:var(--bg-screen)}
+  .scr.on{display:flex;animation:sl .22s ease}
+  @keyframes sl{from{opacity:.4;transform:translateX(8px)}to{opacity:1;transform:none}}
+  .sb{height:30px;display:flex;justify-content:space-between;align-items:flex-end;padding:0 20px 3px;font-size:12px;font-weight:600;color:var(--text-1);flex-shrink:0}
+  .sb.dark{color:#fff}
+  .sb .r{display:flex;gap:5px;font-size:11px;opacity:.85}
+  .tbar{background:var(--brand-sec);color:#fff;min-height:52px;display:flex;align-items:center;gap:6px;padding:0 8px 0 4px;flex-shrink:0}
+  .tbar .ic{width:44px;height:44px;display:grid;place-items:center;font-size:22px;color:#fff;cursor:pointer;border-radius:50%}
+  .tbar .ic:active{background:rgba(255,255,255,.12)}
+  .tbar .tt{font-size:16px;font-weight:700;flex:1;line-height:1.1}
+  .tbar .tt small{display:block;font-size:11px;font-weight:400;opacity:.72;margin-top:1px}
+  .tbar .rt{display:flex;gap:2px}
+  .content{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
+  .content::-webkit-scrollbar{width:0}
+  .pad{padding:16px}
+
+  /* app components (exact metrics) */
+  .card{background:var(--bg-surface);border:1px solid var(--stroke-1);border-radius:12px;padding:16px}
+  .k{font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--text-2)}
+  .card-id{font-size:14px;font-weight:600;line-height:24px}
+  .body{font-size:14px;font-weight:400;line-height:24px;color:var(--text-1)}
+  .body2{font-size:12px;font-weight:400;line-height:20px;letter-spacing:.02em;color:var(--text-2)}
+  .heading{font-size:24px;font-weight:700;line-height:32px}
+  .amt{font-size:16px;font-weight:700;color:var(--brand);font-variant-numeric:tabular-nums}
+  .sec{font-size:12px;font-weight:700;color:var(--text-2);letter-spacing:.03em;margin:16px 0 10px 2px}
+  .rowsb{display:flex;justify-content:space-between;align-items:center}
+  .gap8{height:8px}.gap12{height:12px}.gap16{height:16px}.gap24{height:24px}
+
+  /* banner — WiomBanner */
+  .bn{border-radius:16px;padding:12px;display:flex;gap:11px;align-items:center;margin-bottom:12px;cursor:pointer;transition:.1s}
+  .bn:active{transform:scale(.985)}
+  .bn .bic{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;flex-shrink:0;font-size:16px}
+  .bn .bt{font-size:14px;font-weight:600;line-height:1.32}
+  .bn .bd{font-size:12px;font-weight:400;line-height:1.4;margin-top:2px;opacity:.92}
+  .bn .cv{margin-left:auto;font-size:20px;opacity:.55;align-self:center}
+  .bn-warn{background:var(--bg-warn);color:var(--text-onwarn)} .bn-warn .bic{background:var(--icon-warn);color:#3a2c00}
+  .bn-crit{background:var(--bg-neg);color:#7a1218} .bn-crit .bic{background:var(--neg);color:#fff}
+  .bn-pos{background:var(--bg-pos);color:#0b4d2b} .bn-pos .bic{background:var(--pos);color:#fff}
+  .bn-info{background:var(--bg-info);color:#43128f} .bn-info .bic{background:var(--info);color:#fff}
+
+  .att{background:var(--bg-surface);border:1px solid var(--stroke-1);border-radius:12px;padding:12px 14px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;cursor:pointer}
+  .att .t{font-size:14px;font-weight:600}.att .s{font-size:12px;color:var(--text-2);margin-top:2px}
+  .att .c{font-size:19px;font-weight:700}.att .c small{display:block;font-size:10px;color:var(--text-2);font-weight:600;text-align:right}
+
+  .cta{background:var(--brand);color:#fff;text-align:center;font-size:16px;font-weight:600;line-height:24px;padding:14px;border-radius:16px;margin-top:8px;cursor:pointer;transition:.1s}
+  .cta:active{background:var(--brand-pressed)}
+  .cta.dis{background:var(--text-hint);pointer-events:none}
+  .cta.ghost{background:transparent;color:var(--brand);border:1px solid var(--brand)}
+  .cta.tert{background:transparent;color:var(--text-2);font-weight:600;padding:10px}
+  .opt{background:var(--bg-surface);border:1px solid var(--stroke-2);border-radius:12px;padding:16px;margin-bottom:8px;font-size:14px;font-weight:600;cursor:pointer;color:var(--text-1)}
+  .opt.sel{border:2px solid var(--brand);background:var(--brand-tint);color:var(--brand)}
+
+  .brk{border:1px solid var(--stroke-1);border-radius:12px;background:var(--bg-surface);padding:0 14px;margin:10px 0 8px}
+  .brkrow{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--stroke-1)}
+  .brkrow:last-child{border-bottom:none}
+  .brkrow .nm{font-size:13px;font-weight:600}.brkrow .m2{font-size:10px;color:var(--text-2);margin-top:1px;line-height:1.4}
+  .brkrow .av{font-size:13px;font-weight:700;color:var(--brand);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .total{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:var(--brand-tint);border:1px solid var(--brand-stroke);border-radius:12px;margin-bottom:8px}
+  .total .tl{font-size:14px;font-weight:700}.total .tv{font-size:18px;font-weight:800;color:var(--brand)}
+  .total.g{background:var(--bg-pos);border-color:#9fd9b3}.total.g .tv{color:var(--pos)}
+  .note{font-size:12px;line-height:20px;color:var(--text-2);padding:0 2px}
+  .note.g{color:var(--pos)}.note b{color:var(--text-1);font-weight:600}
+  .heroic{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;margin:8px auto 12px;font-size:30px}
+  .pill{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px}
+  .pill-red{background:var(--bg-neg);color:var(--neg)}
+  .guid .gt{font-size:14px;font-weight:600;margin-bottom:6px}
+  .guid .gl{color:var(--brand);font-weight:600;font-size:12px;line-height:20px;margin-top:8px}
+  .link{color:var(--brand);font-weight:700;font-size:12px;margin-top:10px;display:inline-block;cursor:pointer}
+  .toast{position:absolute;left:16px;right:16px;bottom:20px;background:#161021;color:#fff;border-radius:12px;padding:13px 16px;font-size:13px;z-index:80;opacity:0;transform:translateY(10px);transition:.25s;text-align:center}
+  .toast.show{opacity:1;transform:none}
+  /* sheet overlay */
+  .sheet{position:absolute;inset:0;z-index:50;display:none}
+  .sheet.on{display:block}
+  .scrim{position:absolute;inset:0;background:rgba(22,16,33,.42)}
+  .sheetc{position:absolute;left:0;right:0;bottom:0;background:var(--dialog-bg);border-radius:24px 24px 0 0;max-height:88%;overflow-y:auto;padding:16px 16px 22px;animation:up .25s ease}
+  .sheetc::-webkit-scrollbar{width:0}
+  @keyframes up{from{transform:translateY(30px);opacity:.6}to{transform:none;opacity:1}}
+  .handle{width:36px;height:4px;border-radius:2px;background:var(--stroke-2);margin:0 auto 6px}
+  .navdot{display:flex;gap:5px;justify-content:center;margin-top:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="side">
+    <div class="eyebrow">Wiom CSP · Interactive</div>
+    <h1>NetBox Loss — tap through it</h1>
+    <p class="lede">Real app tokens (colours, type, spacing, radius from <span style="font-family:var(--mono);font-size:12px">WiomTokens.kt</span>). Tap banners, options and CTAs — it navigates like the app. Use the launcher to jump to any flow.</p>
+    <div class="launch">
+      <div class="lb">Flows</div>
+      <button class="lbtn" onclick="go('home')"><span class="n">⌂</span><div>Home <span class="d">— all banners live</span></div></button>
+      <button class="lbtn" onclick="go('d_detail')"><span class="n">1</span><div>Self-mark lost <span class="d">— charge sheet</span></div></button>
+      <button class="lbtn" onclick="go('ag_detail')"><span class="n">2</span><div>Agent recovery <span class="d">— pickup detail</span></div></button>
+      <button class="lbtn" onclick="go('al_break','post')"><span class="n">3</span><div>Auto-lost <span class="d">— full 10-box breakdown</span></div></button>
+      <button class="lbtn" onclick="go('rf_sheet')"><span class="n">R</span><div>Recovered → refund</div></button>
+      <button class="lbtn" onclick="go('guid')"><span class="n">4</span><div>क्या करें <span class="d">— keep-limit + details</span></div></button>
+    </div>
+    <div class="hint">Every ₹ is a rate-card figure: ONT ₹1,888 / Router ₹1,062 × 100/80/60/20% age band. Background is the true token <b style="color:var(--brand-stroke)">#FAF9FC</b> (your phone’s cream tint is its night-light filter).</div>
+  </div>
+
+  <div class="stage">
+    <div class="device"><div class="phone">
+      <div class="notch"></div>
+
+      <!-- ===== HOME ===== -->
+      <div class="scr on" id="home">
+        <div class="sb dark"><span>12:40</span><span class="r"><span>◕</span><span>⛁</span><span>97%</span></span></div>
+        <div class="tbar"><span class="ic" onclick="toast('मेन्यू')">☰</span><span class="tt">Rajesh Kumar<small>एडमिन</small></span><span class="rt"><span class="ic" onclick="toast('डिबग')">🐞</span><span class="ic" onclick="toast('4 नए')">🔔</span></span></div>
+        <div class="content"><div class="pad">
+          <div style="display:flex;gap:8px;margin-bottom:8px">
+            <div class="card" style="flex:1;padding:13px"><div class="k">कनेक्शन</div><div style="font-size:22px;font-weight:700;margin-top:2px">18<span style="font-size:13px;color:var(--text-hint)">/45</span></div></div>
+            <div class="card" style="flex:1;padding:13px"><div class="k">कमाई</div><div style="font-size:22px;font-weight:700;margin-top:2px">₹10,740</div></div>
+          </div>
+          <div class="sec">अभी ध्यान दें</div>
+          <div class="bn bn-warn" onclick="go('ag_detail')"><div class="bic">🚚</div><div><div class="bt">व्योम एजेंट नेटबॉक्स लेने आ रहा है</div><div class="bd">4 खाली नेटबॉक्स तैयार रखें। जो नहीं मिलेगा, उसके पैसे कट सकते हैं।</div></div><span class="cv">›</span></div>
+          <div class="bn bn-warn" onclick="go('al_break','pre')"><div class="bic">⏳</div><div><div class="bt">10 नेटबॉक्स लौटाना बाकी</div><div class="bd">7 दिन में लौटा दें। नहीं तो ये गुम मान लिए जाएंगे और पैसे कट जाएंगे।</div></div><span class="cv">›</span></div>
+          <div class="bn bn-crit" onclick="go('al_break','post')"><div class="bic">📦</div><div><div class="bt">10 नेटबॉक्स गुम मान लिए गए</div><div class="bd">अगले 30 दिनों में ₹10,620 कट जाएंगे। पूरा हिसाब देखें।</div></div><span class="cv">›</span></div>
+          <div class="bn bn-pos" onclick="go('rf_sheet')"><div class="bic">✓</div><div><div class="bt">NB-CUST-02 वापस मिल गया</div><div class="bd">कटे हुए पैसे वापस किए जा रहे हैं। हिसाब देखें।</div></div><span class="cv">›</span></div>
+          <div class="bn bn-info" onclick="go('quality')"><div class="bic">ⓘ</div><div><div class="bt">आपके खाते की जांच चल रही है</div><div class="bd">स्थिति देखें और ज़रूरत हो तो अपील करें।</div></div><span class="cv">›</span></div>
+          <div class="att" onclick="go('d_detail')"><div><div class="t">सभी नेटबॉक्स देखें</div><div class="s">NB-CUST-01 · गुम मार्क करके देखें</div></div><span class="cv" style="font-size:20px;color:var(--brand)">›</span></div>
+        </div></div>
+      </div>
+
+      <!-- ===== DEVICE DETAIL (Flow 1 start) ===== -->
+      <div class="scr" id="d_detail">
+        <div class="sb dark"><span>12:41</span><span class="r"><span>◕</span><span>97%</span></span></div>
+        <div class="tbar"><span class="ic" onclick="go('home')">‹</span><span class="tt">NB-CUST-01</span><span class="ic" onclick="toast('⋮')">⋮</span></div>
+        <div class="content"><div class="pad">
+          <div class="bn bn-pos" style="cursor:default"><div class="bic">📦</div><div><div class="bt">सेटअप बाकी है</div><div class="bd">कनेक्शन पर लगाएं</div></div></div>
+          <div class="card"><div class="card-id">क्या करें</div><div class="gap8"></div><div class="body2">नए कनेक्शन पर इस नेटबॉक्स का इस्तेमाल करें। आप इसे व्योम को वापस भी कर सकते हैं।</div><div class="gap8"></div><div class="card-id" style="color:var(--brand)">90 दिनों से यह आपके पास है</div></div>
+          <div class="gap12"></div>
+          <div class="card"><div class="card-id">नेट बॉक्स हिस्ट्री</div><div class="gap8"></div><div class="rowsb"><div><div class="body" style="font-weight:600">आपके पास आया</div><div class="body2">नेट बॉक्स आपको रिसीव हुआ</div></div><div class="body2">2026-05-05 से</div></div></div>
+        </div></div>
+        <div style="padding:12px 16px 18px;flex-shrink:0">
+          <div class="cta" onclick="toast('वापसी शुरू')">वापस करें</div>
+          <div class="cta ghost" onclick="openSheet('sh_cond')">स्थिति बताएं</div>
+        </div>
+      </div>
+
+      <!-- ===== AGENT DETAIL (Flow 2) ===== -->
+      <div class="scr" id="ag_detail">
+        <div class="sb dark"><span>7:10</span><span class="r"><span>◕</span><span>100%</span></span></div>
+        <div class="tbar"><span class="ic" onclick="go('home')">‹</span><span class="tt">एजेंट विज़िट</span></div>
+        <div class="content"><div class="pad">
+          <div class="heading" style="font-size:18px">एजेंट को ये नेटबॉक्स दें</div>
+          <div class="gap8"></div><div class="body2">तैयार रखने पर कुछ नहीं कटेगा। जो नहीं मिलेगा, नीचे दिखाई रकम कटेगी।</div>
+          <div class="brk">
+            <div class="brkrow"><div><div class="nm">NB-IDLE-01</div><div class="m2">राउटर · 8 महीने · 0–12 बैंड (100%)</div></div><span class="av">₹1,062</span></div>
+            <div class="brkrow"><div><div class="nm">NB-IDLE-03</div><div class="m2">राउटर · 26 महीने · 24–36 बैंड (60%)</div></div><span class="av">₹637</span></div>
+            <div class="brkrow"><div><div class="nm">NB-CUST-02</div><div class="m2">ONT · 30 महीने · 24–36 बैंड (60%)</div></div><span class="av">₹1,133</span></div>
+            <div class="brkrow"><div><div class="nm">NB-CUST-01</div><div class="m2">ONT · 3 महीने · 0–12 बैंड (100%)</div></div><span class="av">₹1,888</span></div>
+          </div>
+          <div class="total"><span class="tl">संभावित कटौती (न देने पर)</span><span class="tv">₹4,720</span></div>
+          <div class="note g">ये नेटबॉक्स एजेंट को दे दें — तैयार रखने पर कुछ नहीं कटेगा।</div>
+        </div></div>
+      </div>
+
+      <!-- ===== AUTO-LOST BREAKDOWN (Flow 3, pre/post) ===== -->
+      <div class="scr" id="al_break">
+        <div class="sb dark"><span>8:00</span><span class="r"><span>◕</span><span>96%</span></span></div>
+        <div class="tbar"><span class="ic" onclick="go('home')">‹</span><span class="tt">कटौती का हिसाब</span></div>
+        <div class="content"><div class="pad">
+          <div class="heading" id="al_title" style="font-size:18px">10 नेटबॉक्स · ₹10,620</div>
+          <div class="gap8"></div><div class="body2" id="al_sub">हर नेटबॉक्स की उम्र के हिसाब से</div>
+          <div class="brk" id="al_list"></div>
+          <div class="total"><span class="tl">कुल कटौती</span><span class="tv">₹10,620</span></div>
+          <div class="note">पैसे आपके वॉलेट से कटेंगे। कम पड़ने पर बकाया पैसे अगली पेमेंट से काटे जाएंगे।</div>
+          <div class="gap8"></div>
+          <div class="note g">कोई नेटबॉक्स मिल जाए, तो उसके पूरे पैसे — उसी जगह — वापस।</div>
+        </div></div>
+      </div>
+
+      <!-- ===== GUIDANCE (Flow 4) ===== -->
+      <div class="scr" id="guid">
+        <div class="sb dark"><span>7:20</span><span class="r"><span>◕</span><span>100%</span></span></div>
+        <div class="tbar"><span class="ic" onclick="go('home')">‹</span><span class="tt">NB-IDLE-01</span></div>
+        <div class="content"><div class="pad">
+          <div class="bn bn-warn" style="cursor:default"><div class="bic">📦</div><div><div class="bt">खाली है</div><div class="bd">कैरी फीस लग सकती है</div></div></div>
+          <div class="card guid">
+            <div class="gt">क्या करें</div>
+            <div class="body2">इसे जल्दी ग्राहक के पास लगाएं या व्योम को वापस करें।</div>
+            <div class="gl">ऑफिस में ज़्यादा से ज़्यादा 15 नेटबॉक्स रखने की अनुमति है। खाली नेटबॉक्स व्योम को लौटा दें। न लौटाने पर पैसे कट सकते हैं।</div>
+            <div class="link" onclick="toggleDet()">कटौती का हिसाब देखें ›</div>
+            <div id="detbrk" style="display:none">
+              <div class="brk" style="margin-top:10px">
+                <div style="padding:10px 0">
+                  <div class="body2">डिवाइस प्रकार: राउटर</div>
+                  <div class="body2">उम्र: 8 महीने (0–12 बैंड)</div>
+                  <div class="body2">₹1,062 × 100% = ₹1,062</div>
+                </div>
+                <div class="brkrow" style="border-top:1px solid var(--stroke-1)"><span class="nm">कुल</span><span class="av" style="font-size:15px">₹1,062</span></div>
+              </div>
+            </div>
+          </div>
+        </div></div>
+      </div>
+
+      <!-- ===== QUALITY drilldown (banner dest) ===== -->
+      <div class="scr" id="quality">
+        <div class="sb dark"><span>12:40</span><span class="r"><span>◕</span><span>97%</span></span></div>
+        <div class="tbar"><span class="ic" onclick="go('home')">‹</span><span class="tt">सेवा स्थिति</span></div>
+        <div class="content"><div class="pad">
+          <div class="card" style="background:var(--bg-warn);border-color:#e8ce92"><div class="rowsb"><div class="card-id" style="color:var(--text-onwarn)">⚠ जोखिम में</div><span class="k" style="color:var(--warn)">1 चीज़</span></div><div class="body2" style="color:var(--text-onwarn);margin-top:4px">बोनस बनाए रखने के लिए यह 1 चीज़ अभी सुधारें</div><div class="gap12"></div><div class="rowsb"><div class="body" style="font-weight:600">तय समय में समाधान</div><span style="font-size:18px;font-weight:700;color:var(--neg)">72%</span></div></div>
+          <div class="sec">पूरी जानकारी</div>
+          <div class="card"><div class="rowsb"><div class="card-id">समय पर काम</div><span class="k" style="color:var(--warn)">⚠ 1/2</span></div><div class="gap12"></div><div class="rowsb"><div class="body">तय समय पर इंस्टॉल</div><span style="font-weight:700;color:var(--pos)">92%</span></div><div class="gap8"></div><div class="rowsb"><div class="body">तय समय में समाधान</div><span style="font-weight:700;color:var(--neg)">72%</span></div></div>
+          <div class="gap8"></div>
+          <div class="card"><div class="rowsb"><div class="card-id">ग्राहक की संतुष्टि</div><span class="k" style="color:var(--pos)">✓ 2/2</span></div></div>
+          <div class="note" style="margin-top:14px">CI banner → <b>/assurance/quality</b> — यह स्क्रीन (deep-link fix).</div>
+        </div></div>
+      </div>
+
+      <!-- ===== SUCCESS ===== -->
+      <div class="scr" id="done">
+        <div class="sb dark"><span>7:09</span><span class="r"><span>◕</span><span>100%</span></span></div>
+        <div class="tbar"><span class="ic" onclick="go('home')">‹</span><span class="tt">NB-CUST-01</span></div>
+        <div class="content"><div class="pad" style="text-align:center;padding-top:80px">
+          <div class="heroic" style="background:var(--bg-pos)">✅</div>
+          <div class="heading" style="font-size:18px">रिपोर्ट दर्ज हो गई</div>
+          <div class="gap8"></div><div class="body2">NB-CUST-01 गुम मार्क हो गया। ₹1,888 अगले 30 दिनों में कटेंगे।</div>
+          <div class="gap24"></div><div class="cta" onclick="go('home')">होम पर जाएं</div>
+        </div></div>
+      </div>
+
+      <!-- ===== SHEET: condition report ===== -->
+      <div class="sheet" id="sh_cond">
+        <div class="scrim" onclick="closeSheet()"></div>
+        <div class="sheetc" style="background:var(--bg-surface)">
+          <div class="handle"></div>
+          <div class="heroic" style="background:var(--brand-tint);width:80px;height:80px;font-size:36px">🛑</div>
+          <div style="text-align:center;font-size:16px;font-weight:700">NB-CUST-01</div>
+          <div class="gap16"></div>
+          <div class="opt" id="opt_dmg" onclick="pickCond('dmg')">खराब है</div>
+          <div class="opt" id="opt_lost" onclick="pickCond('lost')">गुम हो गया</div>
+          <div class="gap8"></div>
+          <div class="cta dis" id="cond_cta" onclick="condConfirm()">पुष्टि करें</div>
+        </div>
+      </div>
+
+      <!-- ===== SHEET: charge warning (Flow 1) ===== -->
+      <div class="sheet" id="sh_charge">
+        <div class="scrim" onclick="closeSheet()"></div>
+        <div class="sheetc" style="background:var(--bg-surface)">
+          <div class="handle"></div>
+          <div class="heroic" style="background:var(--brand-tint);width:80px;height:80px;font-size:34px">🛑</div>
+          <div style="text-align:center;font-size:16px;font-weight:700">क्या यह नेटबॉक्स सच में गुम है?</div>
+          <div class="gap8"></div>
+          <div class="body2" style="text-align:center;padding:0 6px">गुम मार्क करने के बाद, अगले 30 दिनों में आपके वॉलेट से ₹1,888 काटे जाएंगे।</div>
+          <div class="brk" style="margin-top:14px;background:var(--bg-screen)">
+            <div style="padding:11px 0">
+              <div class="card-id" style="font-size:13px;margin-bottom:5px">कटौती का ब्यौरा</div>
+              <div class="body2">डिवाइस प्रकार: ONT</div>
+              <div class="body2">उम्र: 3 महीने (0–12 बैंड)</div>
+              <div class="body2">₹1,888 × 100% = ₹1,888</div>
+            </div>
+            <div class="brkrow" style="border-top:1px solid var(--stroke-1)"><span class="nm">कुल</span><span class="av" style="font-size:16px">₹1,888</span></div>
+          </div>
+          <div class="note">पैसे आपके वॉलेट से कटेंगे। कम पड़ने पर बकाया पैसे अगली पेमेंट से काटे जाएंगे।</div>
+          <div class="gap8"></div>
+          <div class="note g">अगर नेटबॉक्स बाद में आपको मिल जाए, दुबारा update करने पर कटे हुए पैसे वापस मिल जाएंगे।</div>
+          <div class="cta" onclick="closeSheet();go('done')">हाँ, गुम हो गया है</div>
+          <div class="cta tert" onclick="closeSheet()">रुकें</div>
+        </div>
+      </div>
+
+      <!-- ===== SHEET: refund (Flow R) ===== -->
+      <div class="sheet" id="sh_refund">
+        <div class="scrim" onclick="closeSheet()"></div>
+        <div class="sheetc" style="background:var(--bg-surface)">
+          <div class="handle"></div>
+          <div class="heroic" style="background:var(--bg-pos);color:var(--pos);width:76px;height:76px;font-size:32px">↩</div>
+          <div style="text-align:center;font-size:16px;font-weight:700">₹1,500 वापस आ रहे हैं</div>
+          <div class="gap8"></div><div class="body2" style="text-align:center">NB-CUST-02 · जो कटा था, उसी जगह वापस</div>
+          <div class="brk" style="margin-top:14px">
+            <div class="brkrow"><div><div class="nm">वॉलेट में वापस</div><div class="m2">जो वॉलेट से कटा था</div></div><span class="av" style="color:var(--pos)">+₹1,000</span></div>
+            <div class="brkrow"><div><div class="nm">अगली पेमेंट में वापस</div><div class="m2">जो पेमेंट से रुका था</div></div><span class="av" style="color:var(--pos)">+₹500</span></div>
+            <div class="brkrow"><div><div class="nm">बाकी रकम रद्द</div><div class="m2">जो अभी कटी नहीं थी · ₹388</div></div><span class="av" style="color:var(--text-2)">₹0</span></div>
+          </div>
+          <div class="total g"><span class="tl">कुल वापसी</span><span class="tv">₹1,500</span></div>
+          <div class="note">पूरा चार्ज ₹1,888 था। जितना असल में कटा वो वापस; जो कटना बाकी था वो रद्द। इससे ज़्यादा कभी वापस नहीं होता।</div>
+          <div class="cta" onclick="closeSheet();go('home')">ठीक है</div>
+        </div>
+      </div>
+
+      <div class="toast" id="toast"></div>
+    </div></div>
+    <div class="navdot"><span style="font-size:11px;color:var(--page-ink2)">tap banners · options · CTAs — the back arrow works</span></div>
+  </div>
+</div>
+
+<script>
+  var AUTO=[
+    ["NB-CUST-01","ONT · 3 महीने · 0–12 (100%)","1,888"],["NB-CUST-02","ONT · 30 महीने · 24–36 (60%)","1,133"],
+    ["NB-IDLE-01","राउटर · 8 महीने · 0–12 (100%)","1,062"],["NB-IDLE-02","ONT · 14 महीने · 12–24 (80%)","1,510"],
+    ["NB-IDLE-03","राउटर · 26 महीने · 24–36 (60%)","637"],["NB-IDLE-05","राउटर · 16 महीने · 12–24 (80%)","850"],
+    ["NB-IDLE-06","ONT · 40 महीने · 36+ (20%)","378"],["NB-CUST-04","ONT · 5 महीने · 0–12 (100%)","1,888"],
+    ["NB-IDLE-07","राउटर · 6 महीने · 0–12 (100%)","1,062"],["NB-IDLE-08","राउटर · 44 महीने · 36+ (20%)","212"]
+  ];
+  document.getElementById('al_list').innerHTML=AUTO.map(function(b){
+    return '<div class="brkrow"><div><div class="nm">'+b[0]+'</div><div class="m2">'+b[1]+'</div></div><span class="av">₹'+b[2]+'</span></div>';
+  }).join('');
+
+  var condPick=null;
+  function openSheet(id){document.getElementById(id).classList.add('on')}
+  function closeSheet(){document.querySelectorAll('.sheet').forEach(function(s){s.classList.remove('on')});condPick=null;syncCond()}
+  function pickCond(w){condPick=w;syncCond()}
+  function syncCond(){
+    document.getElementById('opt_dmg').classList.toggle('sel',condPick==='dmg');
+    document.getElementById('opt_lost').classList.toggle('sel',condPick==='lost');
+    document.getElementById('cond_cta').classList.toggle('dis',!condPick);
+  }
+  function condConfirm(){ if(condPick==='lost'){closeSheet();openSheet('sh_charge')} else {closeSheet();go('done')} }
+  function toggleDet(){var d=document.getElementById('detbrk');d.style.display=d.style.display==='none'?'block':'none'}
+  var tmr;
+  function toast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(tmr);tmr=setTimeout(function(){t.classList.remove('show')},1400)}
+  // refund launcher opens sheet over home
+  function go(id,mode){
+    if(id==='rf_sheet'){ document.querySelectorAll('.scr').forEach(function(s){s.classList.remove('on')}); document.getElementById('home').classList.add('on'); openSheet('sh_refund'); return; }
+    document.querySelectorAll('.scr').forEach(function(s){s.classList.remove('on')});
+    var el=document.getElementById(id); if(!el){document.getElementById('home').classList.add('on');return;}
+    if(id==='al_break'){
+      var pre = mode==='pre';
+      document.getElementById('al_title').textContent = pre?'10 नेटबॉक्स लौटाना बाकी':'10 नेटबॉक्स · ₹10,620';
+      document.getElementById('al_sub').textContent = pre?'7 दिन में लौटा दें, वरना ₹10,620 कट जाएंगे':'हर नेटबॉक्स की उम्र के हिसाब से';
+    }
+    el.classList.add('on');
+    var c=el.querySelector('.content'); if(c)c.scrollTop=0;
+    closeSheet();
+  }
+</script>
+</body>
+</html>
