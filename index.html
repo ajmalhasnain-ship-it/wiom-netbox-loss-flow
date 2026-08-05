@@ -194,20 +194,9 @@
         <div class="body pad gap12">
           <div class="statrow"><div class="stat"><div class="l">कनेक्शन</div><div class="v">18/45</div></div><div class="stat"><div class="l">सेवा स्थिति</div><div class="v" style="color:var(--warn)">⚠ 1 समस्या</div></div></div>
           <div class="statrow"><div class="stat"><div class="l">कमाई</div><div class="v">₹10,740</div></div><div class="stat"><div class="l">काम की स्थिति</div><div class="v" style="color:var(--pos)">✓</div></div></div>
-          <div class="banner" style="background:var(--bg-warn);border:1px solid rgba(184,92,0,.35)" onclick="go('nbhome')">
-            <span class="bic" style="background:var(--warn)"></span><div class="grow"><div class="bt">4 नेटबॉक्स वापसी में है</div><div class="bs">नेटबॉक्स वापस न करने पर उसे गुम मार्क कर दिया जाएगा।</div></div>
-            <svg width="20" height="20" viewBox="0 0 24 24"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z" fill="#B85C00"/></svg></div>
-          <div class="banner" style="background:var(--bg-warn);border:1px solid rgba(184,92,0,.3)" onclick="toast('अगले 30 दिनों में ये गुम मान लिए जाएंगे')">
-            <span class="bic" style="background:var(--pending)"></span><div class="grow"><div class="bt">10 नेटबॉक्स लौटाना बाकी</div><div class="bs">7 दिन में लौटा दें, नहीं तो गुम मान लिए जाएंगे।</div></div>
-            <svg width="20" height="20" viewBox="0 0 24 24"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z" fill="#B85C00"/></svg></div>
-          <div class="card lg" onclick="go('blocker')" style="cursor:pointer;border-color:rgba(217,33,48,.35);background:var(--bg-neg)">
-            <div style="display:flex;align-items:center;gap:10px"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z" fill="#D92130"/></svg>
-              <div class="grow"><div class="bold" style="font-size:14px">10 नेटबॉक्स गुम पाया गया</div><div class="b11">समय पर नहीं लौटाए। अगले 30 दिनों में इसकी रिकवरी की जाएगी।</div></div>
-              <svg width="20" height="20" viewBox="0 0 24 24"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z" fill="#D92130"/></svg></div></div>
-          <div class="banner" style="background:var(--bg-pos);border:1px solid rgba(0,128,67,.3)" onclick="openSheet('refundSheet')">
-            <span class="bic" style="background:var(--pos);display:grid;place-items:center"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="#fff"/></svg></span>
-            <div class="grow"><div class="bt">NB-CUST-02 वापस मिल गया</div><div class="bs">इसके गुम होने पर जो पैसे कटे थे, वो वापस किए जा रहे हैं।</div></div>
-            <svg width="20" height="20" viewBox="0 0 24 24"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z" fill="#008043"/></svg></div>
+          <div id="homeBanner"><!-- one scenario banner, set by the journey launcher --></div>
+          <div class="card lg"><div class="bold" style="font-size:14px">इंस्टॉल · #1100</div><div class="b13" style="color:var(--text-2);margin-top:4px">समय का प्रस्ताव दें · 3 दिन बाकी</div></div>
+          <div class="card lg"><div class="bold" style="font-size:14px">इंस्टॉल · #1101</div><div class="b13" style="color:var(--text-2);margin-top:4px">समय कन्फर्म होना बाकी · 4 घंटे</div></div>
         </div>
         <div class="overlay" id="refundSheet"><div class="scrim" onclick="closeSheet('refundSheet')"></div>
           <div class="sheet"><div class="handle"></div><div class="inner" style="text-align:left">
@@ -542,7 +531,21 @@
   function closeSheet(id){const el=document.getElementById(id);if(el)el.classList.remove('open');}
   function tb(el){const b=el.nextElementSibling;b.style.display=b.style.display==='none'?'block':'none';}
   let tT;function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(tT);tT=setTimeout(()=>t.classList.remove('show'),2200);}
-  function startJourney(j){document.querySelectorAll('.jbtn').forEach(b=>b.classList.toggle('on',b.dataset.j===j));const entry={A:'nbhome',B:'blocker',C:'home',D:'returned'}[j];go(entry);}
+  /* home shows exactly ONE banner — the one that belongs to the active scenario */
+  const chevW='<svg width="20" height="20" viewBox="0 0 24 24"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z" fill="#B85C00"/></svg>';
+  const chevG='<svg width="20" height="20" viewBox="0 0 24 24"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z" fill="#008043"/></svg>';
+  const BANNERS={
+    agent:'<div class="banner" style="background:var(--bg-warn);border:1px solid rgba(184,92,0,.35)" onclick="go(\'nbhome\')"><span class="bic" style="background:var(--warn)"></span><div class="grow"><div class="bt">4 नेटबॉक्स वापसी में है</div><div class="bs">नेटबॉक्स वापस न करने पर उसे गुम मार्क कर दिया जाएगा।</div></div>'+chevW+'</div>',
+    prenudge:'<div class="banner" style="background:var(--bg-warn);border:1px solid rgba(184,92,0,.3)" onclick="go(\'blocker\')"><span class="bic" style="background:var(--pending)"></span><div class="grow"><div class="bt">10 नेटबॉक्स लौटाना बाकी</div><div class="bs">7 दिन में लौटा दें, नहीं तो गुम मान लिए जाएंगे।</div></div>'+chevW+'</div>',
+    refund:'<div class="banner" style="background:var(--bg-pos);border:1px solid rgba(0,128,67,.3)" onclick="openSheet(\'refundSheet\')"><span class="bic" style="background:var(--pos);display:grid;place-items:center"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="#fff"/></svg></span><div class="grow"><div class="bt">NB-CUST-02 वापस मिल गया</div><div class="bs">इसके गुम होने पर जो पैसे कटे थे, वो वापस किए जा रहे हैं।</div></div>'+chevG+'</div>'
+  };
+  function setScenario(s){const el=document.getElementById('homeBanner');if(el)el.innerHTML=BANNERS[s]||BANNERS.agent;}
+  function startJourney(j){
+    document.querySelectorAll('.jbtn').forEach(b=>b.classList.toggle('on',b.dataset.j===j));
+    setScenario({A:'agent',B:'prenudge',C:'agent',D:'refund'}[j]);
+    go({A:'nbhome',B:'blocker',C:'home',D:'home'}[j]);
+    if(j==='D') openSheet('refundSheet');
+  }
   document.querySelectorAll('#stateSeg button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#stateSeg button').forEach(x=>x.setAttribute('aria-pressed','false'));b.setAttribute('aria-pressed','true');go(b.dataset.dev);});
 
   /* tabs */
@@ -553,7 +556,7 @@
     window.scrollTo(0,0);
   });
 
-  go('home'); wire('home');
+  setScenario('agent'); go('home'); wire('home');
 </script>
 </body>
 </html>
