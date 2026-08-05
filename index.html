@@ -329,7 +329,7 @@
     <div class="controls">
       <div class="ctl-card"><h4>Walk a journey</h4>
         <button class="jbtn on" data-j="A" onclick="startJourney('A')"><b>A · CSP self-marks a box lost</b><span>NetBox Home → device (IDLE) → गुम हो गया → confirm → LOST → वापस करें → returning</span></button>
-        <button class="jbtn" data-j="B" onclick="startJourney('B')"><b>B · Auto-lost recovery</b><span>Push notification (C-11) → recovery breakdown → LOST page → वापस करें → returning</span></button>
+        <button class="jbtn" data-j="B" onclick="startJourney('B')"><b>B · Auto-lost recovery</b><span>Push notification (C-11) — <b>tap</b> → recovery breakdown · <b>missed</b> (don’t tap) → fallback blocker → breakdown → LOST → returning</span></button>
         <button class="jbtn" data-j="C" onclick="startJourney('C')"><b>C · Agent recovery</b><span>Home agent banner → NetBox Home → agent sheet → device</span></button>
         <button class="jbtn" data-j="D" onclick="startJourney('D')"><b>D · Recovered &amp; refund</b><span>Refund notification → refund detail (₹1,500) · returning → returned</span></button>
       </div>
@@ -345,7 +345,7 @@
         <pre id="wire"></pre></div>
     </div>
   </div>
-  <p class="hint2">Tap banners, cards, rows and CTAs inside the phone to move — or drive it from the controls.</p>
+  <p class="hint2">Tap cards, rows and CTAs to move — or drive it from the controls. In Journey B, <b>tap the notification</b> → recovery breakdown, or <b>let it sit (don’t tap)</b> → the blocker fallback appears.</p>
 </section>
 
 <!-- ==================== JOURNEYS ==================== -->
@@ -416,12 +416,12 @@
     <thead><tr><th>State</th><th>Home entry</th><th>Device banner</th><th>Primary action</th><th>Meaning</th></tr></thead>
     <tbody>
       <tr><td><span class="st">AUTOLOST · pre</span> <span class="pill warn">reminder</span><span class="cause">grace window before auto-loss</span></td><td class="home deva">return reminder · {n} नेटबॉक्स लौटाना बाकी</td><td class="deva">—</td><td class="deva">—</td><td>return now or they’ll be marked lost</td></tr>
-      <tr><td><span class="st">AUTOLOST · post</span> <span class="pill info">notify (C-11)</span><span class="cause">window lapsed — system marked lost</span></td><td class="home deva">Push notification · 10 नेटबॉक्स गुम मार्क हुए</td><td class="banner deva">→ रिकवरी का ब्यौरा · pending→recovering · ₹10,620</td><td class="deva">ब्यौरा देखें</td><td>notify CSP + charge visible (PRD T1/C-11)</td></tr>
+      <tr><td><span class="st">AUTOLOST · post</span> <span class="pill info">notify (C-11)</span><span class="cause">window lapsed — system marked lost</span></td><td class="home deva">Push notification · <span style="color:var(--ink-3)">(missed → home blocker)</span></td><td class="banner deva">→ रिकवरी का ब्यौरा · pending→recovering · ₹10,620</td><td class="deva">ब्यौरा देखें</td><td>notify (C-11); blocker = unmissable fallback so the charge stays visible</td></tr>
       <tr><td><span class="st">LOST</span> <span class="pill gap">charged</span><span class="cause">CSP-marked or auto-lost</span></td><td class="deva">via breakdown row</td><td class="banner deva">गुम बताया गया है · रिकवरी राशि लगेगी — पूरा मूल्य</td><td class="deva">वापस करें (found → hand back)</td><td>recovery from wallet over 30 days</td></tr>
       <tr><td><span class="st">LOST · settled</span><span class="cause">recovery complete</span></td><td class="deva">—</td><td class="banner deva">गुम — पूरी रिकवरी हो चुकी</td><td class="deva">—</td><td>money already recovered; terminal</td></tr>
     </tbody>
   </table></div>
-  <div class="callout"><div class="tag">Per PRD — notify, don’t banner</div><p style="margin-top:8px">Auto-loss is the one loss event the CSP didn’t initiate and money moves automatically, so the PRD requires the system to <strong>notify the CSP within C-11 (≤5s)</strong> and keep the charge <strong>visible in a “pending” state</strong> (between C-11 and C-12). The prototype delivers exactly that — a push notification → recovery breakdown — rather than a home banner.</p></div>
+  <div class="callout"><div class="tag">Per PRD — notify, with an unmissable fallback</div><p style="margin-top:8px">Auto-loss is the one loss event the CSP didn’t initiate and money moves automatically, so the PRD requires the system to <strong>notify the CSP within C-11 (≤5s)</strong> and keep the charge <strong>visible in a “pending” state</strong>. The primary surface is a <strong>push notification</strong> → recovery breakdown. But a notification can be missed — so if it isn’t tapped, home falls through to a <strong>full-page blocker</strong>. The blocker is a takeover, not a scroll-past banner, so the PRD’s “charge visible to CSP” guarantee is never lost.</p></div>
 
   <div class="fam-h"><span class="ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg></span><h4>Recovery</h4><span class="tag">RETRIEVAL · customer</span></div>
   <div class="table-scroll"><table>
@@ -685,15 +685,16 @@
   };
   function setScenario(s){const el=document.getElementById('homeBanner');if(el)el.innerHTML=BANNERS[s]||BANNERS.agent;}
   /* PRD C-11 — the CSP is NOTIFIED (push), status is not a home banner */
-  let _ntarget=null,_ntimer=null;
-  function showNotif(title,body,target){_ntarget=target;document.getElementById('notifTitle').textContent=title;document.getElementById('notifBody').textContent=body;const n=document.getElementById('notif');n.classList.add('show');clearTimeout(_ntimer);_ntimer=setTimeout(()=>n.classList.remove('show'),6500);}
-  function closeNotif(){document.getElementById('notif').classList.remove('show');}
-  function notifTap(){closeNotif();if(typeof _ntarget==='function')_ntarget();else if(_ntarget)go(_ntarget);}
+  let _ntarget=null,_ntimer=null,_nmiss=null,_ntapped=false;
+  function showNotif(title,body,target,onMiss){_ntarget=target;_nmiss=onMiss||null;_ntapped=false;document.getElementById('notifTitle').textContent=title;document.getElementById('notifBody').textContent=body;const n=document.getElementById('notif');n.classList.add('show');clearTimeout(_ntimer);_ntimer=setTimeout(function(){n.classList.remove('show');if(!_ntapped&&_nmiss&&document.querySelector('.screen.active').dataset.s==='home')_nmiss();},6500);}
+  function closeNotif(){clearTimeout(_ntimer);document.getElementById('notif').classList.remove('show');}
+  function notifTap(){_ntapped=true;closeNotif();if(typeof _ntarget==='function')_ntarget();else if(_ntarget)go(_ntarget);}
   function startJourney(j){
     document.querySelectorAll('.jbtn').forEach(b=>b.classList.toggle('on',b.dataset.j===j));
     closeNotif(); setScenario('agent');
     if(j==='A'){ go('nbhome'); }
-    else if(j==='B'){ go('home'); setTimeout(()=>showNotif('10 नेटबॉक्स गुम मार्क हुए','अगले 30 दिनों में ₹10,620 रिकवर की जाएगी। ब्यौरा देखें।','breakdown'),380); }
+    // B — notify (C-11); if missed (not tapped in time) → fall through to the unmissable blocker
+    else if(j==='B'){ go('home'); setTimeout(()=>showNotif('10 नेटबॉक्स गुम मार्क हुए','अगले 30 दिनों में ₹10,620 रिकवर की जाएगी। ब्यौरा देखें।','breakdown',()=>go('blocker')),380); }
     else if(j==='C'){ go('home'); }
     else if(j==='D'){ go('home'); setTimeout(()=>showNotif('NB-CUST-02 वापस मिल गया','इसके गुम होने पर कटे ₹1,500 वापस किए जा रहे हैं। देखें।',()=>{go('home');openSheet('refundSheet');}),380); }
   }
