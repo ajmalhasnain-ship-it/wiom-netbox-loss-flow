@@ -253,13 +253,9 @@
             <div class="h1" style="font-size:22px">NB-CUST-02 वापस मिल गया</div>
             <div class="sub" style="margin-top:8px">इसके गुम होने पर जो पैसे कटे थे, वो आपको वापस किए जा रहे हैं।</div>
             <div class="breakbox" style="margin-top:12px">
-              <div style="display:flex"><div class="b13 grow" style="flex:1">वॉलेट में वापस</div><div class="semi green num">+₹1,000</div></div>
-              <div class="divider" style="margin:8px 0"></div>
-              <div style="display:flex"><div class="b13" style="flex:1">पेआउट में जुड़ा</div><div class="semi green num">+₹500</div></div>
-              <div class="divider" style="margin:8px 0"></div>
-              <div style="display:flex"><div class="b13" style="flex:1">कुल वापस</div><div class="bold green num" style="font-size:16px">₹1,500</div></div>
+              <div style="display:flex"><div class="b13" style="flex:1">कुल वापस — आपके वॉलेट में</div><div class="bold green num" style="font-size:16px">₹1,500</div></div>
             </div>
-            <div class="b12" style="margin-top:12px">नेटबॉक्स उसी जगह वापस मिला जहाँ गुम हुआ था — इसलिए पूरे पैसे वापस।</div>
+            <div class="b12" style="margin-top:12px">नेटबॉक्स वापस मिल गया — कटी हुई पूरी राशि उसी जेब में वापस, जहाँ से कटी थी (वॉलेट)।</div>
             <div class="cta primary" style="margin-top:16px" onclick="closeSheet('refundSheet')">ठीक है</div>
           </div></div></div>
       </div>
@@ -277,8 +273,8 @@
           <div class="totalrow"><div class="tl2">कुल रिकवरी</div><div class="tv" id="breakTotal">₹10,620</div></div>
           <div class="lbl" style="margin-top:2px">पैसे कैसे वसूले जाएंगे</div>
           <div class="waterfall">
-            <div class="wstep"><div class="wn">1</div><div class="b13">पहले आपके वॉलेट से</div></div>
-            <div class="wstep"><div class="wn">2</div><div class="b13">कम पड़ने पर अगली पेमेंट से — ₹500 हमेशा सुरक्षित रहेंगे</div></div>
+            <div class="wstep"><div class="wn">1</div><div class="b13">पहले आपके वॉलेट से (₹0 से नीचे नहीं जाएगा)</div></div>
+            <div class="wstep"><div class="wn">2</div><div class="b13">बची राशि आने वाली हर पेमेंट/क्रेडिट से पूरी होने तक कटती रहेगी</div></div>
           </div>
           <div class="b12 green">कोई नेटबॉक्स मिल जाए, तो उसके पूरे पैसे — उसी जगह — वापस मिल जाएंगे।</div>
           <div style="height:8px"></div>
@@ -345,6 +341,7 @@
         <button class="jbtn" data-j="B" onclick="startJourney('B')"><b>B · Auto-lost recovery</b><span>Push notification (C-11) — <b>tap</b> → recovery breakdown · <b>missed</b> (don’t tap) → fallback blocker → breakdown → LOST → returning</span></button>
         <button class="jbtn" data-j="C" onclick="startJourney('C')"><b>C · Agent recovery</b><span>Home agent banner → NetBox Home → agent sheet → device</span></button>
         <button class="jbtn" data-j="D" onclick="startJourney('D')"><b>D · Recovered &amp; refund</b><span>Refund notification → refund detail (₹1,500) · returning → returned</span></button>
+        <button class="jbtn" data-j="E" onclick="startJourney('E')"><b>E · Customer non-recovery <span style="color:var(--warn)">Path B</span></b><span>Deployed → customer disconnects → recovery pending → 30 days missed → notification → गुम मान लिया गया · flat ₹200 from Security Deposit</span></button>
       </div>
       <div class="ctl-card"><h4>Jump to any device state</h4>
         <div class="seg" id="stateSeg">
@@ -352,6 +349,7 @@
           <button data-dev="carryfee">Carry fee</button><button data-dev="custodied">CUSTODIED</button>
           <button data-dev="lost">LOST</button><button data-dev="returning">RETURNING</button>
           <button data-dev="returned">RETURNED</button><button data-dev="damaged">DAMAGED</button>
+          <button data-dev="nonrecovery">NON-RECOVERY (Path B)</button>
         </div>
       </div>
       <div class="inspector"><div class="ttl">◦ current screen — <span style="color:var(--accent)">GET /netbox/device/&lt;id&gt;</span></div>
@@ -638,6 +636,13 @@
       tl([[(d?'गुम बताया गया':'गुम पाया गया'),(d?'CSP ने गुम बताया — रिकवरी 30 दिन में':'रिकवरी 30 दिन में शुरू होगी'),'2026-06-25 से','var(--brand)'],['कनेक्शन हटा','Customer disconnected','2026-06-20 से','var(--hint)'],['आपके पास आया','नेट बॉक्स आपको रिसीव हुआ','2026-03-20 से','var(--hint)']])+
       '<div class="link" style="text-align:center" onclick="toast(\'सहायता — सपोर्ट से जुड़ रहे हैं\')">सहायता के लिए संपर्क करें</div>'+
       '</div><div class="stickywrap"><div class="ctahint">नेट बॉक्स मिल जाए तो वापस करें — रिकवरी रुक जाएगी, कोई पैसा नहीं कटेगा।</div><div class="cta primary" onclick="_returnCtx=\'lost\';go(\'returning\')">वापस करें</div></div>';},
+    nonrecovery:()=>devHead('NB-NREC-01')+'<div class="body pad gap12" style="padding-bottom:96px">'+
+      '<div class="statusban" style="background:var(--bg-neg)"><div class="circ" style="background:var(--neg)">'+ICON.lost+'</div><div class="grow"><div class="t">गुम मान लिया गया</div><div class="s">कस्टमर से वापस नहीं आया</div></div></div>'+
+      '<div class="card"><div class="bold" style="font-size:14px">क्या करें</div><div class="b13" style="margin-top:8px">यह नेटबॉक्स कस्टमर से 30 दिन में वापस नहीं आया, इसलिए गुम मान लिया गया। मिल जाए तो व्योम को वापस करें — ₹200 सिक्योरिटी डिपॉज़िट में वापस आ जाएँगे।</div><div class="b13" style="color:var(--warn);font-weight:700;margin-top:6px">वापस न करने पर ₹200 सिक्योरिटी डिपॉज़िट से कटेंगे।</div></div>'+
+      '<div class="card"><div class="lbl" style="margin-bottom:2px">कितनी रिकवरी होगी</div><div class="b12" style="margin-bottom:8px">रेट कार्ड नहीं — कस्टमर से न लौटने पर तय राशि</div><div class="semi" style="font-size:14px">फ्लैट राशि: <span class="num">₹200</span></div><div class="b12" style="margin-top:2px">आपकी सिक्योरिटी डिपॉज़िट से काटे जाएँगे (वॉलेट से नहीं)</div><div class="b12">डिपॉज़िट कम हो तो कटौती अगले चक्र में — तब तक टॉप-अप की सूचना मिलेगी।</div></div>'+
+      tl([['गुम मान लिया गया','कस्टमर से वापस नहीं आया — ₹200 सिक्योरिटी डिपॉज़िट से','2026-06-25 से','var(--neg)'],['कस्टमर से लाना था','रिकवरी विंडो (30 दिन)','2026-05-25 से','var(--hint)'],['कनेक्शन हटा','Customer disconnected','2026-05-20 से','var(--hint)']])+
+      '<div class="link" style="text-align:center" onclick="toast(\'सहायता — सपोर्ट से जुड़ रहे हैं\')">सहायता के लिए संपर्क करें</div>'+
+      '</div><div class="stickywrap"><div class="ctahint">नेट बॉक्स मिल जाए तो वापस करें — ₹200 सिक्योरिटी डिपॉज़िट में वापस।</div><div class="cta primary" onclick="_returnCtx=\'lost\';go(\'returning\')">वापस करें</div></div>',
     returning:()=>{var ag=(_returnCtx==='agent');return devHead(ag?(_agentBox||'NB-IDLE-01'):'NB-GUM-10')+'<div class="body pad gap12" style="padding-bottom:96px">'+
       '<div class="statusban" style="background:var(--bg-info)"><div class="circ" style="background:var(--info)">'+ICON.truck+'</div><div class="grow"><div class="t">वापस होने की प्रक्रिया में</div><div class="s">'+(ag?'व्योम एजेंट को सौंपें':'जल्द पिकअप होगा')+'</div></div></div>'+
       '<div class="card"><div class="bold" style="font-size:14px">क्या करें</div><div class="b13" style="margin-top:8px">'+(ag?'यह नेटबॉक्स व्योम एजेंट को सौंप दें। सौंपते ही वापसी पूरी हो जाएगी।':'नेट बॉक्स तैयार रखें। पिकअप टीम आपसे संपर्क करेगी।')+'</div><div class="b13" style="color:var(--warn);font-weight:700;margin-top:6px">वापस न करने पर गुम मार्क कर दिया जाएगा।</div></div>'+
@@ -721,7 +726,7 @@
       '<div class="card listcard" style="margin-top:12px">'+boxes.map(function(r,i){return '<div class="row" onclick="closeSheet(\'breakSheet\');go(\'lost\')"><div class="grow"><div class="id">'+r[0]+'</div><div class="meta">'+(r[1]==='ONT'?'ONT':'राउटर')+' · '+r[2]+'</div></div><div class="amt">₹'+r[3]+'</div></div>'+(i<boxes.length-1?'<div class="divider"></div>':'');}).join('')+'</div>'+
       '<div class="totalrow" style="margin-top:8px"><div class="tl2">कुल रिकवरी</div><div class="tv">₹'+fmtN(lossTotal())+'</div></div>'+
       '<div class="lbl" style="margin-top:12px">पैसे कैसे वसूले जाएंगे</div>'+
-      '<div class="waterfall" style="margin-top:6px"><div class="wstep"><div class="wn">1</div><div class="b13">पहले आपके वॉलेट से</div></div><div class="wstep"><div class="wn">2</div><div class="b13">कम पड़ने पर अगली पेमेंट से — ₹500 हमेशा सुरक्षित रहेंगे</div></div></div>'+
+      '<div class="waterfall" style="margin-top:6px"><div class="wstep"><div class="wn">1</div><div class="b13">पहले आपके वॉलेट से (₹0 से नीचे नहीं जाएगा)</div></div><div class="wstep"><div class="wn">2</div><div class="b13">बची राशि आने वाली हर पेमेंट/क्रेडिट से पूरी होने तक कटती रहेगी</div></div></div>'+
       '<div class="cta primary" style="margin-top:16px" onclick="closeSheet(\'breakSheet\');go(\'home\')">ठीक है</div>';}
   function go(k){
     document.querySelectorAll('.overlay').forEach(o=>o.classList.remove('open'));
@@ -765,6 +770,7 @@
     else if(j==='B'){ go('home'); setTimeout(()=>showNotif(_lossN+' नेटबॉक्स गुम पाया गया','अगले 30 दिनों में ₹'+fmtN(lossTotal())+' रिकवर की जाएगी। डिटेल देखें।',openBreakdown,function(){if(_lossN===1){openBreakdown();}else{go('blocker');}}),380); }
     else if(j==='C'){ go('home'); }
     else if(j==='D'){ go('home'); setTimeout(()=>showNotif('NB-CUST-02 वापस मिल गया','इसके गुम होने पर कटे ₹1,500 वापस किए जा रहे हैं। देखें।',()=>{go('home');openSheet('refundSheet');}),380); }
+    else if(j==='E'){ go('home'); setTimeout(()=>showNotif('1 नेटबॉक्स कस्टमर से वापस नहीं आया','गुम मान लिया गया — ₹200 आपकी सिक्योरिटी डिपॉज़िट से काटे जाएँगे। डिटेल देखें।',()=>go('nonrecovery'),()=>go('nonrecovery')),380); }
   }
   document.querySelectorAll('#stateSeg button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#stateSeg button').forEach(x=>x.setAttribute('aria-pressed','false'));b.setAttribute('aria-pressed','true');go(b.dataset.dev);});
 
