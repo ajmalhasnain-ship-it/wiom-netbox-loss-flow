@@ -108,6 +108,15 @@
   .sheet{position:absolute;left:0;right:0;bottom:0;background:var(--surface);border-radius:24px 24px 0 0;padding:8px 0 0;animation:slideup .28s cubic-bezier(.2,.8,.2,1);max-height:92%;overflow-y:auto} .sheet::-webkit-scrollbar{width:0}
   .handle{width:32px;height:4px;border-radius:2px;background:var(--stroke-2);margin:6px auto 2px} .sheet .inner{padding:12px 16px 16px} .sheet.center .inner{display:flex;flex-direction:column;align-items:center;text-align:center}
   @keyframes slideup{from{transform:translateY(100%)}to{transform:translateY(0)}}
+  /* drawer */
+  .drawer{position:absolute;top:0;left:0;bottom:0;width:84%;background:var(--surface);display:flex;flex-direction:column;animation:slidein .24s ease}
+  @keyframes slidein{from{transform:translateX(-100%)}to{transform:translateX(0)}}
+  .dhead{background:var(--plum);color:#fff;padding:22px 18px 18px}
+  .dav{width:44px;height:44px;border-radius:50%;background:var(--brand);display:grid;place-items:center;font-weight:700;font-size:18px;margin-bottom:10px;font-family:var(--sans)}
+  .dname{font-size:16px;font-weight:700} .dsub{font-size:12px;opacity:.85;margin-top:2px}
+  .ditem{display:flex;align-items:center;gap:14px;padding:15px 18px;font-size:15px;color:var(--text);cursor:pointer;border-bottom:1px solid var(--line-2)}
+  .ditem:hover{background:var(--subtle)} .ditem.on{color:var(--brand);font-weight:600}
+  .ditem svg{width:22px;height:22px;flex:0 0 auto}
   .badge80{width:80px;height:80px;border-radius:50%;background:var(--brand-tint);display:grid;place-items:center}
   .breakbox{background:var(--app-bg);border:1px solid var(--stroke);border-radius:12px;padding:12px;width:100%;text-align:left}
   .totalrow{display:flex;align-items:center;padding:0 4px} .totalrow .tl2{flex:1;font-size:14px;font-weight:600;color:var(--text)} .totalrow .tv{font-size:18px;font-weight:700;color:var(--brand)}
@@ -188,7 +197,7 @@
 
       <!-- 08 HOME -->
       <div class="screen active" data-s="home">
-        <div class="appbar dark"><div class="icobtn"><svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg></div>
+        <div class="appbar dark"><div class="icobtn" onclick="openSheet('drawer')"><svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg></div>
           <div class="ti"><span class="num">Rajesh Kumar</span> · एडमिन</div>
           <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg></div>
         <div class="body pad gap12">
@@ -198,6 +207,14 @@
           <div class="card lg"><div class="bold" style="font-size:14px">इंस्टॉल · #1100</div><div class="b13" style="color:var(--text-2);margin-top:4px">समय का प्रस्ताव दें · 3 दिन बाकी</div></div>
           <div class="card lg"><div class="bold" style="font-size:14px">इंस्टॉल · #1101</div><div class="b13" style="color:var(--text-2);margin-top:4px">समय कन्फर्म होना बाकी · 4 घंटे</div></div>
         </div>
+        <div class="overlay" id="drawer"><div class="scrim" onclick="closeSheet('drawer')"></div>
+          <div class="drawer">
+            <div class="dhead"><div class="dav">R</div><div class="dname">Rajesh Kumar</div><div class="dsub">CSP-1042 · एडमिन</div></div>
+            <div class="ditem" onclick="go('home')"><svg viewBox="0 0 24 24" fill="none" stroke="#161021" stroke-width="1.7"><path d="M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10"/></svg>होम</div>
+            <div class="ditem on" onclick="go('nbhome')"><svg viewBox="0 0 24 24" fill="none" stroke="#D9008D" stroke-width="1.7"><rect x="3" y="8" width="18" height="10" rx="2"/><path d="M7 8V6a5 5 0 0 1 10 0v2"/></svg>नेट बॉक्स</div>
+            <div class="ditem" onclick="closeSheet('drawer');toast('टीम')"><svg viewBox="0 0 24 24" fill="none" stroke="#161021" stroke-width="1.7"><circle cx="9" cy="8" r="3"/><path d="M15 11a3 3 0 1 0 0-6M3 20v-1a5 5 0 0 1 5-5h2a5 5 0 0 1 5 5v1M17 14a5 5 0 0 1 4 5v1"/></svg>टीम</div>
+            <div class="ditem" onclick="closeSheet('drawer');toast('सेटिंग्स')"><svg viewBox="0 0 24 24" fill="none" stroke="#161021" stroke-width="1.7"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1l2-1.5-2-3.5-2.4 1a7 7 0 0 0-1.7-1L16.5 3h-4l-.3 2.5a7 7 0 0 0-1.7 1l-2.4-1-2 3.5 2 1.5a7 7 0 0 0 0 2l-2 1.5 2 3.5 2.4-1a7 7 0 0 0 1.7 1l.3 2.5h4l.3-2.5a7 7 0 0 0 1.7-1l2.4 1 2-3.5-2-1.5a7 7 0 0 0 .1-1z"/></svg>सेटिंग्स</div>
+          </div></div>
         <div class="overlay" id="refundSheet"><div class="scrim" onclick="closeSheet('refundSheet')"></div>
           <div class="sheet"><div class="handle"></div><div class="inner" style="text-align:left">
             <div class="h1" style="font-size:22px">NB-CUST-02 वापस मिल गया</div>
@@ -485,7 +502,7 @@
       '<div class="card"><div class="bold" style="font-size:14px">क्या करें</div><div class="b13" style="margin-top:8px">नेट बॉक्स तैयार रखें। पिकअप टीम आपसे संपर्क करेगी।</div></div>'+
       '<div class="costcard"><div class="b12" style="text-transform:uppercase;letter-spacing:.04em">पैसे कितने कटे</div><div class="bold" style="font-size:16px;margin-top:4px">नुकसान वसूली: <span class="num">₹212</span></div><div class="b12" style="margin-top:4px">डिवाइस प्रकार: राउटर<br>उम्र: 44 महीने (36+ बैंड)<br>₹1,062 × 20% = ₹212</div></div>'+
       tl([['वापसी शुरू','नेट बॉक्स सही बताया — वापसी का अनुरोध','अभी','var(--brand)'],['गुम बताया गया','समय पर नहीं लौटाया','2026-06-25 से','var(--hint)'],['आपके पास आया','नेट बॉक्स आपको रिसीव हुआ','2026-03-20 से','var(--hint)']])+
-      '</div><div class="cta outline stickycta" onclick="toast(\'गुम मार्क — रिकवरी जारी रहेगी\')">गुम हो गया</div>',
+      '</div><div class="stickybar"><div class="cta primary" onclick="go(\'returned\')">पिकअप कन्फर्म करें</div><div class="cta text" onclick="toast(\'गुम मार्क — रिकवरी जारी रहेगी\')">गुम हो गया</div></div>',
     returned:()=>devHead('NB-CUST-02')+'<div class="body pad gap12" style="padding-bottom:96px">'+
       '<div class="statusban" style="background:var(--bg-pos)"><div class="circ" style="background:var(--pos)">'+ICON.check+'</div><div class="grow"><div class="t">वापस मिल गया</div><div class="s">व्योम को रिसीव हो गया — पैसे वापस किए जा रहे हैं</div></div></div>'+
       '<div class="card"><div class="bold" style="font-size:14px">क्या करें</div><div class="b13" style="margin-top:8px">कुछ नहीं करना है। इसके गुम होने पर कटे पैसे आपको वापस किए जा रहे हैं।</div><div class="link" style="margin-top:8px" onclick="go(\'home\');openSheet(\'refundSheet\')">रिफ़ंड का हिसाब देखें</div></div>'+
