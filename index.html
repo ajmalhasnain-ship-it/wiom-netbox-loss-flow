@@ -121,6 +121,20 @@
   .breakbox{background:var(--app-bg);border:1px solid var(--stroke);border-radius:12px;padding:12px;width:100%;text-align:left}
   .totalrow{display:flex;align-items:center;padding:0 4px} .totalrow .tl2{flex:1;font-size:14px;font-weight:600;color:var(--text)} .totalrow .tv{font-size:18px;font-weight:700;color:var(--brand)}
   .toast{position:absolute;left:16px;right:16px;bottom:24px;background:#241E17;color:#fff;border-radius:12px;padding:13px 16px;font-size:13px;z-index:40;opacity:0;transform:translateY(10px);transition:.25s;text-align:center} .toast.show{opacity:1;transform:translateY(0)}
+  /* push notification (PRD C-11 "notify CSP") — heads-up */
+  .notif{position:absolute;left:8px;right:8px;top:8px;z-index:60;background:#fff;border-radius:14px;box-shadow:0 10px 30px -8px rgba(20,10,30,.45);padding:12px 14px;display:none;cursor:pointer;border:1px solid var(--stroke)}
+  .notif.show{display:block;animation:notifIn .32s cubic-bezier(.2,.8,.2,1)}
+  @keyframes notifIn{from{transform:translateY(-120%);opacity:.4}to{transform:translateY(0);opacity:1}}
+  .notif .nrow{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+  .notif .nlogo{width:20px;height:20px;border-radius:5px;background:var(--plum);display:grid;place-items:center;color:var(--brand);font-weight:800;font-size:12px;font-family:var(--sans)}
+  .notif .napp{font-size:11px;font-weight:700;color:var(--text-2);font-family:var(--sans);letter-spacing:.02em} .notif .ntime{margin-left:auto;font-size:11px;color:var(--hint);font-family:var(--sans)}
+  .notif .ntitle{font-size:14px;font-weight:700;color:var(--text)} .notif .nbody{font-size:12.5px;color:var(--text-2);margin-top:2px;line-height:1.4}
+  /* status chip (PRD "pending" charge state) */
+  .schip2{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:4px 10px;border-radius:999px}
+  .schip2.pending{background:var(--bg-warn);color:var(--warn)} .schip2.recovering{background:var(--bg-info);color:var(--info)} .schip2.done{background:var(--bg-pos);color:var(--pos)}
+  .schip2 .cdot{width:7px;height:7px;border-radius:50%;background:currentColor}
+  .waterfall{background:var(--app-bg);border:1px solid var(--stroke);border-radius:12px;padding:12px}
+  .wstep{display:flex;gap:10px;align-items:flex-start;padding:4px 0} .wstep .wn{width:18px;height:18px;border-radius:50%;background:var(--plum);color:#fff;font-size:10px;font-weight:700;display:grid;place-items:center;flex:0 0 auto;font-family:var(--sans)}
 
   /* controls / inspector */
   .controls{display:flex;flex-direction:column;gap:18px;position:sticky;top:84px}
@@ -246,10 +260,15 @@
         <div class="appbar dark"><div class="icobtn" onclick="go('home')"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></div><div class="ti">कटौती का हिसाब</div></div>
         <div class="body pad gap12">
           <div class="h1">10 नेटबॉक्स गुम पाया गया</div>
-          <div class="sub">समय पर नहीं लौटाए। अगले 30 दिनों में इसकी रिकवरी की जाएगी।</div>
+          <div><span class="schip2 recovering"><span class="cdot"></span>रिकवरी जारी · अगले 30 दिन</span></div>
+          <div class="sub">समय पर नहीं लौटाए। रिकवरी राशि अगले 30 दिनों में वसूली जाएगी।</div>
           <div class="card listcard" id="breakList"></div>
-          <div class="totalrow"><div class="tl2">कुल कटौती</div><div class="tv">₹10,620</div></div>
-          <div class="b12">पैसे पहले वॉलेट से कटेंगे। कम पड़ने पर बाकी रकम अगली पेमेंट से काटी जाएगी। ₹500 हमेशा आपके पास रहेंगे।</div>
+          <div class="totalrow"><div class="tl2">कुल रिकवरी</div><div class="tv">₹10,620</div></div>
+          <div class="lbl" style="margin-top:2px">पैसे कैसे वसूले जाएंगे</div>
+          <div class="waterfall">
+            <div class="wstep"><div class="wn">1</div><div class="b13">पहले आपके वॉलेट से</div></div>
+            <div class="wstep"><div class="wn">2</div><div class="b13">कम पड़ने पर अगली पेमेंट से — ₹500 हमेशा सुरक्षित रहेंगे</div></div>
+          </div>
           <div class="b12 green">कोई नेटबॉक्स मिल जाए, तो उसके पूरे पैसे — उसी जगह — वापस मिल जाएंगे।</div>
           <div style="height:8px"></div>
         </div>
@@ -300,15 +319,19 @@
         <div class="cta primary stickycta" onclick="go('lost')">ठीक है</div>
       </div>
 
+      <div class="notif" id="notif" onclick="notifTap()">
+        <div class="nrow"><div class="nlogo">∞</div><div class="napp">WIOM CSP</div><div class="ntime">अभी</div></div>
+        <div class="ntitle" id="notifTitle"></div><div class="nbody" id="notifBody"></div>
+      </div>
       <div class="toast" id="toast"></div>
     </div></div></div>
 
     <div class="controls">
       <div class="ctl-card"><h4>Walk a journey</h4>
         <button class="jbtn on" data-j="A" onclick="startJourney('A')"><b>A · CSP self-marks a box lost</b><span>NetBox Home → device (IDLE) → गुम हो गया → confirm → LOST → वापस करें → returning</span></button>
-        <button class="jbtn" data-j="B" onclick="startJourney('B')"><b>B · Auto-lost recovery</b><span>Home blocker → breakdown → LOST page → वापस करें → returning</span></button>
+        <button class="jbtn" data-j="B" onclick="startJourney('B')"><b>B · Auto-lost recovery</b><span>Push notification (C-11) → recovery breakdown → LOST page → वापस करें → returning</span></button>
         <button class="jbtn" data-j="C" onclick="startJourney('C')"><b>C · Agent recovery</b><span>Home agent banner → NetBox Home → agent sheet → device</span></button>
-        <button class="jbtn" data-j="D" onclick="startJourney('D')"><b>D · Recovered &amp; refund</b><span>Home "वापस मिल गया" → refund sheet · returning → returned</span></button>
+        <button class="jbtn" data-j="D" onclick="startJourney('D')"><b>D · Recovered &amp; refund</b><span>Refund notification → refund detail (₹1,500) · returning → returned</span></button>
       </div>
       <div class="ctl-card"><h4>Jump to any device state</h4>
         <div class="seg" id="stateSeg">
@@ -343,13 +366,13 @@
   </ol>
 
   <div class="jhead"><div class="num">B</div><h3>Auto-lost recovery</h3></div>
-  <p>Boxes not returned inside the window are marked lost by the system. Because money is now at stake, home shows a <strong>full-page blocker</strong> — not a dismissible banner — that opens the full ₹ breakdown.</p>
-  <ol class="steps">
-    <li><b>Home · pre-nudge <span class="schip">grace window</span></b><span class="arrow">Amber banner “{n} नेटबॉक्स लौटाना बाकी · 7 दिन में लौटा दें”. Window lapses →</span></li>
-    <li><b>Home · full-page blocker <span class="schip">auto-lost</span></b><span class="arrow">Takes over home: “10 नेटबॉक्स गुम पाया गया · अगले 30 दिनों में इसकी रिकवरी”. पूरा ब्यौरा देखें →</span></li>
-    <li><b>कटौती का हिसाब <span class="schip">breakdown</span></b><span class="arrow">All 10 boxes itemised (type · age · band · ₹) → कुल कटौती ₹10,620. Tap any row →</span></li>
-    <li><b>Device · LOST <span class="schip">state LOST</span></b><span class="arrow">That box’s LOST page. वापस करें →</span></li>
-    <li><b>Device · RETURNING <span class="schip">RETRIEVAL_PENDING</span></b><span class="arrow">Same recovery tail as Journey A.</span></li>
+  <p>Boxes not returned inside the window are marked lost by the system. Per PRD — <span class=”mono”>T1: “Notify the CSP within C-11”</span> — the CSP is <strong>notified (push)</strong>, not shown a home banner, and the charge is <strong>visible in a pending → recovering state</strong> (the PRD’s “CSP sees a charge entry in ‘pending’ state” between C-11 and C-12).</p>
+  <ol class=”steps”>
+    <li><b>Return window · pre-nudge <span class=”schip”>grace</span></b><span class=”arrow”>Return reminder while the window is open. Window lapses → system raises the Loss Charge (RecoverableDue) →</span></li>
+    <li><b>Push notification <span class=”schip”>C-11 · ≤5s</span></b><span class=”arrow”>“10 नेटबॉक्स गुम मार्क हुए · अगले 30 दिनों में ₹10,620 रिकवर की जाएगी। ब्यौरा देखें।” Tap →</span></li>
+    <li><b>रिकवरी का ब्यौरा <span class=”schip”>pending → recovering</span></b><span class=”arrow”>Status chip + all 10 boxes itemised (type · age · band · ₹) → कुल रिकवरी ₹10,620, and the collection waterfall (वॉलेट → अगली पेमेंट, ₹500 floor). Tap any row →</span></li>
+    <li><b>Device · LOST <span class=”schip”>state LOST</span></b><span class=”arrow”>That box’s LOST page. वापस करें →</span></li>
+    <li><b>Device · RETURNING <span class=”schip”>RETRIEVAL_PENDING</span></b><span class=”arrow”>Same recovery tail as Journey A → Returned → refund.</span></li>
   </ol>
 
   <div class="jhead"><div class="num">C</div><h3>Agent recovery</h3></div>
@@ -392,13 +415,13 @@
   <div class="table-scroll"><table>
     <thead><tr><th>State</th><th>Home entry</th><th>Device banner</th><th>Primary action</th><th>Meaning</th></tr></thead>
     <tbody>
-      <tr><td><span class="st">AUTOLOST · pre</span> <span class="pill warn">nudge</span><span class="cause">grace window before auto-loss</span></td><td class="home deva">{n} नेटबॉक्स लौटाना बाकी · 7 दिन में लौटा दें</td><td class="deva">—</td><td class="deva">—</td><td>return now or they’ll be marked lost</td></tr>
-      <tr><td><span class="st">AUTOLOST · post</span> <span class="pill gap">blocker</span><span class="cause">window lapsed — system marked lost</span></td><td class="home deva">Full-page blocker · 10 नेटबॉक्स गुम पाया गया</td><td class="banner deva">पूरा ब्यौरा देखें → कटौती का हिसाब (₹10,620)</td><td class="deva">पूरा ब्यौरा देखें</td><td>a takeover screen — money is at stake</td></tr>
+      <tr><td><span class="st">AUTOLOST · pre</span> <span class="pill warn">reminder</span><span class="cause">grace window before auto-loss</span></td><td class="home deva">return reminder · {n} नेटबॉक्स लौटाना बाकी</td><td class="deva">—</td><td class="deva">—</td><td>return now or they’ll be marked lost</td></tr>
+      <tr><td><span class="st">AUTOLOST · post</span> <span class="pill info">notify (C-11)</span><span class="cause">window lapsed — system marked lost</span></td><td class="home deva">Push notification · 10 नेटबॉक्स गुम मार्क हुए</td><td class="banner deva">→ रिकवरी का ब्यौरा · pending→recovering · ₹10,620</td><td class="deva">ब्यौरा देखें</td><td>notify CSP + charge visible (PRD T1/C-11)</td></tr>
       <tr><td><span class="st">LOST</span> <span class="pill gap">charged</span><span class="cause">CSP-marked or auto-lost</span></td><td class="deva">via breakdown row</td><td class="banner deva">गुम बताया गया है · रिकवरी राशि लगेगी — पूरा मूल्य</td><td class="deva">वापस करें (found → hand back)</td><td>recovery from wallet over 30 days</td></tr>
       <tr><td><span class="st">LOST · settled</span><span class="cause">recovery complete</span></td><td class="deva">—</td><td class="banner deva">गुम — पूरी रिकवरी हो चुकी</td><td class="deva">—</td><td>money already recovered; terminal</td></tr>
     </tbody>
   </table></div>
-  <div class="callout crit"><div class="tag">Why a blocker, not a banner</div><p style="margin-top:8px">Auto-loss is the one loss event the CSP didn’t initiate and money moves automatically. A dismissible banner can be scrolled past; a <strong>full-page blocker</strong> guarantees the CSP sees “10 नेटबॉक्स गुम पाया गया” and reaches the itemised ₹10,620 breakdown before continuing.</p></div>
+  <div class="callout"><div class="tag">Per PRD — notify, don’t banner</div><p style="margin-top:8px">Auto-loss is the one loss event the CSP didn’t initiate and money moves automatically, so the PRD requires the system to <strong>notify the CSP within C-11 (≤5s)</strong> and keep the charge <strong>visible in a “pending” state</strong> (between C-11 and C-12). The prototype delivers exactly that — a push notification → recovery breakdown — rather than a home banner.</p></div>
 
   <div class="fam-h"><span class="ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg></span><h4>Recovery</h4><span class="tag">RETRIEVAL · customer</span></div>
   <div class="table-scroll"><table>
@@ -473,13 +496,24 @@
 <span class="k">outcomes</span>: [{ <span class="k">type</span>: <span class="s">"device.outcome.lossRecovery"</span>, <span class="k">amount_display</span>: <span class="s">"378"</span> }]
 <span class="k">timeline</span>: [ LOST · IDLE · CUSTODIED ]</pre></div>
 
-  <h3 class="block-h">Auto-lost is a home banner event, not a device fetch</h3>
+  <h3 class="block-h">Surfacing per PRD — notify (C-11) + charge visibility</h3>
+  <p>The PRD requires the system to <span class="mono">“Notify the CSP within C-11”</span> and keep the charge <span class="mono">“visible to CSP”</span> in a pending state; it leaves the exact screens to design. So the LOST event fires a <strong>push notification</strong> (deep-linking to the recovery breakdown), and the charge is visible on the recovery view + device page — not a home banner takeover.</p>
   <div class="table-scroll" style="max-width:720px"><table>
-    <thead><tr><th>event_type_id</th><th>severity</th><th>deep_link</th><th>renders</th></tr></thead>
+    <thead><tr><th>event</th><th>PRD ref</th><th>deep_link</th><th>surfaces as</th></tr></thead>
     <tbody>
-      <tr><td><span class="mono">NETBOX_AUTOLOST_PRE</span></td><td><span class="pill warn">WARNING</span></td><td><span class="mono">/netbox/loss/pre</span></td><td>amber “लौटाना बाकी” nudge</td></tr>
-      <tr><td><span class="mono">NETBOX_AUTOLOST_POST</span></td><td><span class="pill gap">CRITICAL</span></td><td><span class="mono">/netbox/loss/post</span></td><td>full-page blocker → breakdown</td></tr>
-      <tr><td><span class="mono">NETBOX_AGENT_RECOVERY</span></td><td><span class="pill warn">WARNING</span></td><td><span class="mono">/netbox/agent</span></td><td>एजेंट विज़िट section → pickup sheet</td></tr>
+      <tr><td><span class="mono">LOSS_CHARGE_RAISED</span></td><td><span class="mono">T1 · C-11</span></td><td><span class="mono">/netbox/loss/post</span></td><td>push notification → रिकवरी का ब्यौरा (pending→recovering)</td></tr>
+      <tr><td><span class="mono">RECOVERY_REVERSED</span></td><td><span class="mono">R10 · T7/T8</span></td><td><span class="mono">/netbox/loss/refund</span></td><td>push notification → refund detail (₹1,500)</td></tr>
+      <tr><td><span class="mono">RETURN_REMINDER</span></td><td>—</td><td><span class="mono">/netbox/agent</span></td><td>return nudge / एजेंट विज़िट (not a charge status)</td></tr>
+    </tbody>
+  </table></div>
+  <h3 class="block-h">PRD constraints in play</h3>
+  <div class="table-scroll" style="max-width:720px"><table>
+    <thead><tr><th>ID</th><th>Constraint</th><th>Value</th></tr></thead>
+    <tbody>
+      <tr><td><span class="mono">C-09</span></td><td>Payout floor — min take-home under hold</td><td>₹500 (50,000 paise)</td></tr>
+      <tr><td><span class="mono">C-11</span></td><td>Notification latency: LOST → charge visible to CSP</td><td>≤5s <span class="pill warn">AI-gen · not PM-confirmed</span></td></tr>
+      <tr><td><span class="mono">C-12</span></td><td>Charge creation window: LOST → RecoverableDue committed</td><td>~10 min</td></tr>
+      <tr><td><span class="mono">C-13</span></td><td>Reconciliation cycle (0 = instant, else deferred PENDING)</td><td>periodic</td></tr>
     </tbody>
   </table></div>
   <div class="callout"><div class="tag">Demo build — mock keys</div><p style="margin-top:8px">This prototype mirrors the mock flavour: home banner via <span class="mono">taskFeedComposition = banner_netbox_autolost_post</span>; the 10 auto-lost boxes carry their own <span class="mono">NB-GUM-01…10</span> ids, each routed to a LOST-state fixture so tapping a breakdown row opens the right per-box page (distinct from the agent-pickup ids, which stay actionable).</p></div>
@@ -506,7 +540,7 @@
   <h3 class="block-h">Four principles</h3>
   <div class="callout"><div class="tag">1 · No instant deduction</div><p style="margin-top:8px">Copy never says “₹X कट गए”. It says the money will be recovered <strong>over the next 30 days</strong> — a backend-decided window. This is why the confirm sheet reads <span class="deva">“अगले 30 दिनों में आपके वॉलेट से ₹1,888 रिकवर की जाएगी”</span>, not a past-tense deduction.</p></div>
   <div class="callout"><div class="tag">2 · Recovery goes back where it came from</div><p style="margin-top:8px">If the box returns, the exact deduction is reversed to the exact place — wallet to wallet, payout to payout. The CSP is never left net-negative on a returned box. Every loss screen carries the green line <span class="deva">“नेटबॉक्स लौटाने पर पूरे पैसे वापस हो जाएंगे।”</span></p></div>
-  <div class="callout crit"><div class="tag">3 · Auto-loss blocks, self-loss confirms</div><p style="margin-top:8px">When the <em>system</em> marks boxes lost (window lapsed), money moves without the CSP acting — so home shows a <strong>full-page blocker</strong> they must see. When the <em>CSP</em> marks a box lost, a charge-warning sheet makes the ₹ explicit <strong>before</strong> they commit. Different initiator, different friction.</p></div>
+  <div class="callout crit"><div class="tag">3 · Auto-loss notifies, self-loss confirms</div><p style="margin-top:8px">When the <em>system</em> marks boxes lost (window lapsed), money moves without the CSP acting — so per PRD <span class="mono">T1</span> the CSP is <strong>notified (push) within C-11 (≤5s)</strong> and the charge sits <strong>visible in a “pending” state</strong> until committed (C-12), then recovers over the cycle (C-13). When the <em>CSP</em> marks a box lost, a charge-warning sheet makes the ₹ explicit <strong>before</strong> they commit. Different initiator, different surface — never a scroll-past home banner for money that already moved.</p></div>
   <div class="callout warn"><div class="tag">4 · Agent pickup carries no upfront charge</div><p style="margin-top:8px">Handing boxes to a Wiom agent is a return, not a loss — the pickup sheet shows <span class="deva">“वापस करें”</span> with no ₹ and no total. A charge only applies later, and only if a box isn’t actually produced.</p></div>
 
   <h3 class="block-h">Nudge cadence</h3>
@@ -650,11 +684,18 @@
     refund:'<div class="banner" style="background:var(--bg-pos);border:1px solid rgba(0,128,67,.3)" onclick="openSheet(\'refundSheet\')"><span class="bic" style="background:var(--pos);display:grid;place-items:center"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="#fff"/></svg></span><div class="grow"><div class="bt">NB-CUST-02 वापस मिल गया</div><div class="bs">इसके गुम होने पर जो पैसे कटे थे, वो वापस किए जा रहे हैं।</div></div>'+chevG+'</div>'
   };
   function setScenario(s){const el=document.getElementById('homeBanner');if(el)el.innerHTML=BANNERS[s]||BANNERS.agent;}
+  /* PRD C-11 — the CSP is NOTIFIED (push), status is not a home banner */
+  let _ntarget=null,_ntimer=null;
+  function showNotif(title,body,target){_ntarget=target;document.getElementById('notifTitle').textContent=title;document.getElementById('notifBody').textContent=body;const n=document.getElementById('notif');n.classList.add('show');clearTimeout(_ntimer);_ntimer=setTimeout(()=>n.classList.remove('show'),6500);}
+  function closeNotif(){document.getElementById('notif').classList.remove('show');}
+  function notifTap(){closeNotif();if(typeof _ntarget==='function')_ntarget();else if(_ntarget)go(_ntarget);}
   function startJourney(j){
     document.querySelectorAll('.jbtn').forEach(b=>b.classList.toggle('on',b.dataset.j===j));
-    setScenario({A:'agent',B:'prenudge',C:'agent',D:'refund'}[j]);
-    go({A:'nbhome',B:'blocker',C:'home',D:'home'}[j]);
-    if(j==='D') openSheet('refundSheet');
+    closeNotif(); setScenario('agent');
+    if(j==='A'){ go('nbhome'); }
+    else if(j==='B'){ go('home'); setTimeout(()=>showNotif('10 नेटबॉक्स गुम मार्क हुए','अगले 30 दिनों में ₹10,620 रिकवर की जाएगी। ब्यौरा देखें।','breakdown'),380); }
+    else if(j==='C'){ go('home'); }
+    else if(j==='D'){ go('home'); setTimeout(()=>showNotif('NB-CUST-02 वापस मिल गया','इसके गुम होने पर कटे ₹1,500 वापस किए जा रहे हैं। देखें।',()=>{go('home');openSheet('refundSheet');}),380); }
   }
   document.querySelectorAll('#stateSeg button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#stateSeg button').forEach(x=>x.setAttribute('aria-pressed','false'));b.setAttribute('aria-pressed','true');go(b.dataset.dev);});
 
