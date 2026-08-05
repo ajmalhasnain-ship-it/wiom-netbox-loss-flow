@@ -179,6 +179,8 @@
       <button role="tab" aria-selected="true" data-tab="proto">Prototype</button>
       <button role="tab" aria-selected="false" data-tab="journeys">Journeys</button>
       <button role="tab" aria-selected="false" data-tab="states">States</button>
+      <button role="tab" aria-selected="false" data-tab="tech">Tech</button>
+      <button role="tab" aria-selected="false" data-tab="product">Product</button>
       <button role="tab" aria-selected="false" data-tab="design">Design</button>
     </nav>
   </div>
@@ -424,6 +426,97 @@
       <tr><td><span class="st">WRITTEN_OFF</span><span class="cause">terminal write-off</span></td><td class="deva">—</td><td class="banner deva">राइट-ऑफ किया गया</td><td class="deva">—</td><td>closed; no further action</td></tr>
     </tbody>
   </table></div>
+</section>
+
+<!-- ==================== TECH ==================== -->
+<section class="panel" id="tech" role="tabpanel" hidden>
+  <div class="eyebrow">The app renders · the server drives</div>
+  <h2 class="section-h">How the wire moves a box through the flow.</h2>
+  <p class="lede">The client holds no loss logic. Every state, amount and CTA is server-composed and rendered as-is. A box’s screen is a pure function of one <span class="mono">GET /netbox/device/{id}</span> response; home banners come from <span class="mono">/feed/banners</span>; actions POST back and the next fetch reflects the new state.</p>
+
+  <h3 class="block-h">Endpoints</h3>
+  <div class="table-scroll"><table>
+    <thead><tr><th>Method · path</th><th>Returns</th><th>Drives</th></tr></thead>
+    <tbody>
+      <tr><td><span class="mono">GET /netbox/device/{id}</span></td><td>device + state + loss_preview + outcomes + ctas + timeline</td><td>every device page (idle → lost → returning …)</td></tr>
+      <tr><td><span class="mono">GET /home/feed</span></td><td>feed + <span class="mono">banner</span> (event, severity, deep_link)</td><td>home banner / blocker selection</td></tr>
+      <tr><td><span class="mono">GET /feed/banners</span></td><td><span class="mono">banners__&lt;state&gt;.json</span> — title_display · subtitle_display · deep_link</td><td>the actual banner strings on home</td></tr>
+      <tr><td><span class="mono">GET /netbox/capacity-offer</span></td><td>ordering eligibility (ACS gates)</td><td>“Capacity बढ़ाएं” (adjacent)</td></tr>
+      <tr><td><span class="mono">POST /netbox/report-condition</span></td><td>transition → LOST / DAMAGED</td><td>“गुम हो गया” confirm</td></tr>
+      <tr><td><span class="mono">POST …/revert-condition</span></td><td>transition → RETRIEVAL_PENDING</td><td>“वापस करें” on a LOST box</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3 class="block-h">Device state enum (raw)</h3>
+  <p>The FE never ranks or invents a state — it renders whichever <span class="mono">device.state</span> the backend returns.</p>
+  <div class="table-scroll"><table>
+    <thead><tr><th>state</th><th>allowed_actions</th><th>renders as</th></tr></thead>
+    <tbody>
+      <tr><td><span class="st">IDLE / CUSTODIED</span></td><td><span class="mono">RETURN · REPORT_CONDITION</span></td><td>actionable device page (वापस करें · गुम हो गया)</td></tr>
+      <tr><td><span class="st">DEPLOYED</span></td><td><span class="mono">—</span></td><td>on a customer; no CTA</td></tr>
+      <tr><td><span class="st">LOST / DAMAGED</span></td><td><span class="mono">REVERT_CONDITION</span></td><td>problem page · वापस करें + contact support</td></tr>
+      <tr><td><span class="st">RETRIEVAL_PENDING</span></td><td><span class="mono">REPORT_CONDITION</span></td><td>“वापस होने की प्रक्रिया में”</td></tr>
+      <tr><td><span class="st">RETURNED / WRITTEN_OFF</span></td><td><span class="mono">—</span></td><td>terminal; no CTA</td></tr>
+      <tr><td><span class="st">RECOVERY_PENDING</span></td><td><span class="mono">—</span></td><td>customer-recovery card</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3 class="block-h">Device response shape</h3>
+  <div class="inspector" style="max-width:640px"><div class="ttl">◦ GET /netbox/device/NB-GUM-07 — LOST</div><pre>
+<span class="k">device</span>: { <span class="k">netbox_id</span>: <span class="s">"NB-GUM-07"</span>, <span class="k">state</span>: <span class="s">"LOST"</span> }
+<span class="k">allowed_actions</span>: [<span class="s">"REVERT_CONDITION"</span>]
+<span class="k">loss_preview</span>: {
+  <span class="k">amount_display</span>: <span class="s">"378"</span>, <span class="k">device_type</span>: <span class="s">"ONT"</span>,
+  <span class="k">window_days</span>: <span class="n">30</span>,
+  <span class="k">breakdown_lines</span>: [ <span class="s">"डिवाइस प्रकार: ONT"</span>,
+    <span class="s">"उम्र: 40 महीने (36+ बैंड)"</span>, <span class="s">"₹1,888 × 20% = ₹378"</span> ] }
+<span class="k">outcomes</span>: [{ <span class="k">type</span>: <span class="s">"device.outcome.lossRecovery"</span>, <span class="k">amount_display</span>: <span class="s">"378"</span> }]
+<span class="k">timeline</span>: [ LOST · IDLE · CUSTODIED ]</pre></div>
+
+  <h3 class="block-h">Auto-lost is a home banner event, not a device fetch</h3>
+  <div class="table-scroll" style="max-width:720px"><table>
+    <thead><tr><th>event_type_id</th><th>severity</th><th>deep_link</th><th>renders</th></tr></thead>
+    <tbody>
+      <tr><td><span class="mono">NETBOX_AUTOLOST_PRE</span></td><td><span class="pill warn">WARNING</span></td><td><span class="mono">/netbox/loss/pre</span></td><td>amber “लौटाना बाकी” nudge</td></tr>
+      <tr><td><span class="mono">NETBOX_AUTOLOST_POST</span></td><td><span class="pill gap">CRITICAL</span></td><td><span class="mono">/netbox/loss/post</span></td><td>full-page blocker → breakdown</td></tr>
+      <tr><td><span class="mono">NETBOX_AGENT_RECOVERY</span></td><td><span class="pill warn">WARNING</span></td><td><span class="mono">/netbox/agent</span></td><td>एजेंट विज़िट section → pickup sheet</td></tr>
+    </tbody>
+  </table></div>
+  <div class="callout"><div class="tag">Demo build — mock keys</div><p style="margin-top:8px">This prototype mirrors the mock flavour: home banner via <span class="mono">taskFeedComposition = banner_netbox_autolost_post</span>; the 10 auto-lost boxes carry their own <span class="mono">NB-GUM-01…10</span> ids, each routed to a LOST-state fixture so tapping a breakdown row opens the right per-box page (distinct from the agent-pickup ids, which stay actionable).</p></div>
+</section>
+
+<!-- ==================== PRODUCT ==================== -->
+<section class="panel" id="product" role="tabpanel" hidden>
+  <div class="eyebrow">Charge · collect · reverse</div>
+  <h2 class="section-h">The loss &amp; recovery model.</h2>
+  <p class="lede">A NetBox is Wiom hardware in the CSP’s custody. If it isn’t returned, its depreciated value is recovered from the CSP — never instantly, always over a stated window, and always reversible if the box comes back. Four principles govern every screen.</p>
+
+  <h3 class="block-h">Rate card — depreciated recovery value</h3>
+  <p>Recovery = base value × age-band factor. Never a flat penalty; an older box costs less.</p>
+  <div class="table-scroll" style="max-width:640px"><table>
+    <thead><tr><th>Age band</th><th>Factor</th><th>ONT · ₹1,888 base</th><th>Router · ₹1,062 base</th></tr></thead>
+    <tbody>
+      <tr><td>0–12 months</td><td><strong>100%</strong></td><td>₹1,888</td><td>₹1,062</td></tr>
+      <tr><td>12–24 months</td><td>80%</td><td>₹1,510</td><td>₹850</td></tr>
+      <tr><td>24–36 months</td><td>60%</td><td>₹1,133</td><td>₹637</td></tr>
+      <tr><td>36+ months</td><td>20%</td><td>₹378</td><td>₹212</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3 class="block-h">Four principles</h3>
+  <div class="callout"><div class="tag">1 · No instant deduction</div><p style="margin-top:8px">Copy never says “₹X कट गए”. It says the money will be recovered <strong>over the next 30 days</strong> — a backend-decided window. This is why the confirm sheet reads <span class="deva">“अगले 30 दिनों में आपके वॉलेट से ₹1,888 रिकवर की जाएगी”</span>, not a past-tense deduction.</p></div>
+  <div class="callout"><div class="tag">2 · Recovery goes back where it came from</div><p style="margin-top:8px">If the box returns, the exact deduction is reversed to the exact place — wallet to wallet, payout to payout. The CSP is never left net-negative on a returned box. Every loss screen carries the green line <span class="deva">“नेटबॉक्स लौटाने पर पूरे पैसे वापस हो जाएंगे।”</span></p></div>
+  <div class="callout crit"><div class="tag">3 · Auto-loss blocks, self-loss confirms</div><p style="margin-top:8px">When the <em>system</em> marks boxes lost (window lapsed), money moves without the CSP acting — so home shows a <strong>full-page blocker</strong> they must see. When the <em>CSP</em> marks a box lost, a charge-warning sheet makes the ₹ explicit <strong>before</strong> they commit. Different initiator, different friction.</p></div>
+  <div class="callout warn"><div class="tag">4 · Agent pickup carries no upfront charge</div><p style="margin-top:8px">Handing boxes to a Wiom agent is a return, not a loss — the pickup sheet shows <span class="deva">“वापस करें”</span> with no ₹ and no total. A charge only applies later, and only if a box isn’t actually produced.</p></div>
+
+  <h3 class="block-h">Nudge cadence</h3>
+  <ol class="steps">
+    <li><b>Return window open</b><span class="arrow">Box idle with the CSP · carry fee may accrue · “वापस करें” available.</span></li>
+    <li><b>Pre-nudge <span class="schip">7 days left</span></b><span class="arrow">Amber banner “{n} नेटबॉक्स लौटाना बाकी · 7 दिन में लौटा दें”.</span></li>
+    <li><b>Auto-lost <span class="schip">window lapsed</span></b><span class="arrow">System marks lost → full-page blocker “गुम पाया गया”.</span></li>
+    <li><b>30-day recovery</b><span class="arrow">Amount recovered from wallet over the window; box shown LOST.</span></li>
+    <li><b>Reversal <span class="schip">if found</span></b><span class="arrow">वापस करें → returning → returned → full refund.</span></li>
+  </ol>
 </section>
 
 <!-- ==================== DESIGN ==================== -->
