@@ -117,6 +117,17 @@
   .ditem{display:flex;align-items:center;gap:14px;padding:15px 18px;font-size:15px;color:var(--text);cursor:pointer;border-bottom:1px solid var(--line-2)}
   .ditem:hover{background:var(--subtle)} .ditem.on{color:var(--brand);font-weight:600}
   .ditem svg{width:22px;height:22px;flex:0 0 auto}
+  /* inventory list */
+  .chips{display:flex;gap:8px;padding:12px 16px;overflow-x:auto;flex:0 0 auto;border-bottom:1px solid var(--stroke);background:var(--app-bg)} .chips::-webkit-scrollbar{height:0}
+  .chip{white-space:nowrap;font-size:13px;padding:7px 13px;border-radius:999px;border:1px solid var(--stroke);background:var(--surface);color:var(--text-2);cursor:pointer}
+  .chip.on{background:var(--brand);border-color:var(--brand);color:#fff}
+  .invcount{padding:12px 16px 6px;font-size:12px;color:var(--text-2)}
+  .invrow{display:flex;align-items:center;gap:10px;padding:14px 16px;background:var(--surface);border-bottom:1px solid var(--stroke);cursor:pointer}
+  .invrow:active{background:var(--subtle)}
+  .invrow .grow{flex:1;min-width:0} .invrow .id{font-size:14px;font-weight:600;font-family:var(--sans);color:var(--text)} .invrow .meta{font-size:12px;color:var(--text-2);margin-top:2px}
+  .tag2{font-size:11px;font-weight:600;padding:3px 9px;border-radius:6px;white-space:nowrap}
+  .tag2.mine{background:var(--subtle);color:var(--info)} .tag2.deployed{background:var(--bg-pos);color:var(--pos)} .tag2.lost{background:var(--bg-neg);color:var(--neg)} .tag2.ret{background:var(--bg-info);color:var(--info)} .tag2.fee{background:var(--bg-warn);color:var(--pending)} .tag2.returned{background:var(--bg-pos);color:var(--pos)}
+  .invchev{color:var(--hint);flex:0 0 auto}
   .badge80{width:80px;height:80px;border-radius:50%;background:var(--brand-tint);display:grid;place-items:center}
   .breakbox{background:var(--app-bg);border:1px solid var(--stroke);border-radius:12px;padding:12px;width:100%;text-align:left}
   .totalrow{display:flex;align-items:center;padding:0 4px} .totalrow .tl2{flex:1;font-size:14px;font-weight:600;color:var(--text)} .totalrow .tv{font-size:18px;font-weight:700;color:var(--brand)}
@@ -282,10 +293,10 @@
             <div class="top"><div style="font-size:12px;color:var(--text-2)">कुल नेटबॉक्स</div><div class="big">14</div>
               <div class="distbar"><i style="flex:7;background:#4A4A4A"></i><i style="flex:4;background:#8A8A8A"></i><i style="flex:3;background:#C8C4D0"></i></div>
               <div class="legend"><div class="it"><span class="dot" style="background:#4A4A4A"></span>ग्राहक के पास 7</div><div class="it"><span class="dot" style="background:#8A8A8A"></span>मेरे पास 4</div><div class="it"><span class="dot" style="background:#C8C4D0"></span>अन्य 3</div></div></div>
-            <div class="seeall" onclick="go('idle')"><span>सभी नेटबॉक्स देखें</span><svg width="18" height="18" viewBox="0 0 24 24"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z" fill="#D9008D"/></svg></div></div></div>
+            <div class="seeall" onclick="go('inventory')"><span>सभी नेटबॉक्स देखें</span><svg width="18" height="18" viewBox="0 0 24 24"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z" fill="#D9008D"/></svg></div></div></div>
           <div class="seclbl">अभी ध्यान दें</div>
           <div style="padding:0 16px" class="gap12">
-            <div class="card lg acard" onclick="go('idle')"><div class="grow"><div class="t">कैरी फीस लग रही है</div><div class="s">अब तक ₹170 · रोज़ ₹6 लग रही</div></div><div class="cnt"><b style="color:var(--pending)">2</b><small>नेटबॉक्स</small></div></div>
+            <div class="card lg acard" onclick="go('carryfee')"><div class="grow"><div class="t">कैरी फीस लग रही है</div><div class="s">अब तक ₹170 · रोज़ ₹6 लग रही</div></div><div class="cnt"><b style="color:var(--pending)">2</b><small>नेटबॉक्स</small></div></div>
             <div class="card lg acard"><div class="grow"><div class="t">रिकवरी में</div><div class="s">ग्राहक से वापस लाएँ, वरना नुकसान</div></div><div class="cnt"><b style="color:var(--info)">1</b><small>नेटबॉक्स</small></div></div></div>
           <div class="seclbl">एजेंट विज़िट</div>
           <div style="padding:0 16px"><div class="card lg acard" onclick="openSheet('agentSheet')"><div class="grow"><div class="t">नेटबॉक्स वापसी में है</div><div class="s">नेटबॉक्स वापस न करने पर उसे गुम मार्क कर दिया जाएगा।</div></div><div class="cnt"><b style="color:var(--warn)">4</b><small>नेटबॉक्स</small></div></div></div>
@@ -303,6 +314,13 @@
             <div class="b12 green" style="margin-top:4px">नेटबॉक्स लौटाने पर पूरे पैसे वापस हो जाएंगे।</div>
             <div class="cta primary" style="margin-top:16px" onclick="closeSheet('agentSheet')">ठीक है</div>
           </div></div></div>
+      </div>
+
+      <!-- INVENTORY · सभी नेटबॉक्स -->
+      <div class="screen" data-s="inventory">
+        <div class="appbar dark"><div class="icobtn" onclick="go('nbhome')"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></div><div class="ti">सभी नेटबॉक्स</div></div>
+        <div class="chips" id="invChips"></div>
+        <div class="body"><div class="invcount" id="invCount"></div><div id="invList"></div></div>
       </div>
 
       <!-- device pages are rendered into these shells -->
@@ -655,6 +673,18 @@
   document.getElementById('breakList').innerHTML=AUTO_LOST.map((r,i)=>'<div class="row" onclick="go(\'lost\')"><div class="grow"><div class="id">'+r[0]+'</div><div class="meta">'+(r[1]==='ONT'?'ONT':'राउटर')+' · '+r[2]+'</div></div><div class="amt">₹'+r[3]+'</div></div>'+(i<AUTO_LOST.length-1?'<div class="divider"></div>':'')).join('');
   document.getElementById('agentList').innerHTML=AGENT.map((r,i)=>'<div class="row" onclick="closeSheet(\'agentSheet\');go(\'custodied\')"><div class="grow"><div class="id">'+r[0]+'</div><div class="meta">'+r[1]+'</div></div><div class="amt">वापस करें</div></div>'+(i<AGENT.length-1?'<div class="divider"></div>':'')).join('');
   document.getElementById('tokTable').innerHTML=TOK.map(t=>'<tr><td><strong>'+t[0]+'</strong></td><td><span class="sw" style="display:inline-block;background:'+t[1]+';vertical-align:middle"></span> <span class="mono">'+t[1]+'</span></td><td>'+t[2]+'</td></tr>').join('');
+
+  // ---------- inventory (सभी नेटबॉक्स) ----------
+  DEVPAGE.deployed=()=>devHead('NB-DEPL-01')+'<div class="body pad gap12">'+
+    '<div class="statusban" style="background:var(--bg-pos)"><div class="circ" style="background:var(--pos)">'+ICON.router+'</div><div class="grow"><div class="t">ग्राहक के पास लगा है</div><div class="s">नेट चालू है · कोई कार्रवाई ज़रूरी नहीं</div></div></div>'+
+    '<div class="card"><div class="bold" style="font-size:14px">क्या करें</div><div class="b13" style="margin-top:8px">यह नेटबॉक्स ग्राहक के कनेक्शन पर लगा है और चालू है। अभी कुछ करने की ज़रूरत नहीं।</div></div>'+
+    tl([['कनेक्शन पर लगा','Installed at customer','2026-04-01 से','var(--pos)'],['आपके पास आया','नेट बॉक्स रिसीव हुआ','2026-03-20 से','var(--hint)']])+'</div>';
+  const NETBOXES=[['NB-IDLE-01','राउटर · 8 महीने','मेरे पास','mine','idle'],['NB-IDLE-02','राउटर · 16 महीने · कैरी फीस','fee','carryfee'],['NB-CUST-01','ONT · 3 महीने','मेरे पास','mine','custodied'],['NB-CUST-03','राउटर · 5 महीने','मेरे पास','mine','idle'],['NB-DEPL-01','राउटर · ग्राहक: रीना','ग्राहक के पास','deployed','deployed'],['NB-DEPL-02','ONT · ग्राहक: अमित','ग्राहक के पास','deployed','deployed'],['NB-DEPL-03','राउटर · ग्राहक: सुनीता','ग्राहक के पास','deployed','deployed'],['NB-DEPL-04','ONT · ग्राहक: रवि','ग्राहक के पास','deployed','deployed'],['NB-GUM-07','ONT · 40 महीने','गुम','lost','lost'],['NB-GUM-10','राउटर · 44 महीने · वापसी में','ret','returning'],['NB-CUST-02','ONT · 30 महीने · वापस मिला','returned','returned'],['NB-DMGD-01','राउटर · 12 महीने','खराब','lost','damaged']];
+  const CHIPS=[['सभी',null],['मेरे पास',['mine','fee']],['ग्राहक के पास',['deployed']],['गुम / खराब',['lost']],['वापसी में',['ret','returned']]];
+  let _invF=0;
+  function renderInv(){var f=CHIPS[_invF][1];document.getElementById('invChips').innerHTML=CHIPS.map((c,i)=>'<div class="chip'+(i===_invF?' on':'')+'" onclick="setInvFilter('+i+')">'+c[0]+'</div>').join('');var rows=NETBOXES.filter(n=>!f||f.includes(n[3]));document.getElementById('invCount').textContent=rows.length+' नेटबॉक्स';document.getElementById('invList').innerHTML=rows.map(n=>'<div class="invrow" onclick="go(\''+n[4]+'\')"><div class="grow"><div class="id">'+n[0]+'</div><div class="meta">'+n[1]+'</div></div><div class="tag2 '+n[3]+'">'+n[2]+'</div><svg class="invchev" width="18" height="18" viewBox="0 0 24 24"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z" fill="currentColor"/></svg></div>').join('');}
+  function setInvFilter(i){_invF=i;renderInv();}
+  renderInv();
 
   const WIRE={home:{screen:'home_feed',banners:['agent','autolost_pre','autolost_post','refund']},blocker:{screen:'blocker',event:'NETBOX_AUTOLOST_POST',severity:'CRITICAL'},breakdown:{screen:'loss_detail',boxes:10,total:'₹10,620'},nbhome:{screen:'netbox_home',total:14},idle:{state:'IDLE',loss_preview:'₹1,062'},idle_warn:{state:'IDLE·warn'},carryfee:{state:'IDLE',carry_fee:'₹6/day'},custodied:{state:'CUSTODIED'},lost:{state:'LOST',allowed:['REVERT_CONDITION'],recovery:'₹212'},returning:{state:'RETRIEVAL_PENDING'},returned:{state:'RETURNED',refund:'₹1,500'},damaged:{state:'DAMAGED'},success:{event:'condition.reported.LOST'}};
   function wire(k){const o=WIRE[k]||{screen:k};document.getElementById('wire').innerHTML=Object.entries(o).map(([a,b])=>'<span class="k">'+a+'</span>: '+(Array.isArray(b)?'['+b.join(', ')+']':(typeof b==='number'?'<span class="n">'+b+'</span>':'<span class="s">'+b+'</span>'))).join('\n');}
