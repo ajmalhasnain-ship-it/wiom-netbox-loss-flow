@@ -305,13 +305,6 @@
             <div class="card lg acard"><div class="grow"><div class="t">नेट बॉक्स वापस लें</div><div class="s">कस्टमर ने लौटाया</div></div></div>
             <div class="card lg acard"><div class="grow"><div class="t">एक से अधिक वापसी</div><div class="s">कई नेटबॉक्स लौटाएं</div></div></div></div>
         </div>
-        <div class="overlay" id="agentSheet"><div class="scrim" onclick="closeSheet('agentSheet')"></div>
-          <div class="sheet"><div class="handle"></div><div class="inner" style="text-align:left">
-            <div class="h1" style="font-size:22px">व्योम एजेंट को ये नेटबॉक्स दें</div>
-            <div class="sub" style="margin-top:8px">वापस न करने पर गुम मार्क कर दिया जाएगा।</div>
-            <div class="card listcard" style="background:var(--app-bg);margin-top:12px" id="agentList"></div>
-            <div class="cta primary" style="margin-top:16px" onclick="closeSheet('agentSheet')">ठीक है</div>
-          </div></div></div>
       </div>
 
       <!-- INVENTORY · सभी नेटबॉक्स -->
@@ -334,6 +327,14 @@
       <!-- single-netbox recovery detail opens as a bottom sheet (not a full page) -->
       <div class="overlay" id="breakSheet"><div class="scrim" onclick="closeSheet('breakSheet')"></div>
         <div class="sheet"><div class="handle"></div><div class="inner" id="breakSheetInner" style="text-align:left"></div></div></div>
+      <!-- agent pickup sheet — top-level so it can open over Home or NetBox-Home -->
+      <div class="overlay" id="agentSheet"><div class="scrim" onclick="closeSheet('agentSheet')"></div>
+        <div class="sheet"><div class="handle"></div><div class="inner" style="text-align:left">
+          <div class="h1" style="font-size:22px">व्योम एजेंट को ये नेटबॉक्स दें</div>
+          <div class="sub" style="margin-top:8px">वापस न करने पर गुम मार्क कर दिया जाएगा।</div>
+          <div class="card listcard" style="background:var(--app-bg);margin-top:12px" id="agentList"></div>
+          <div class="cta primary" style="margin-top:16px" onclick="closeSheet('agentSheet')">ठीक है</div>
+        </div></div></div>
       <div class="toast" id="toast"></div>
     </div></div></div>
 
@@ -741,13 +742,13 @@
   const chevW='<svg width="20" height="20" viewBox="0 0 24 24"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z" fill="#B85C00"/></svg>';
   const chevG='<svg width="20" height="20" viewBox="0 0 24 24"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z" fill="#008043"/></svg>';
   const BANNERS={
-    agent:'<div class="banner" style="background:var(--bg-warn);border:1px solid rgba(184,92,0,.35)" onclick="go(\'nbhome\');openSheet(\'agentSheet\')"><span class="bic" style="background:var(--warn)"></span><div class="grow"><div class="bt">4 नेटबॉक्स वापसी में है</div><div class="bs">नेटबॉक्स वापस न करने पर उसे गुम मार्क कर दिया जाएगा।</div></div>'+chevW+'</div>',
+    agent:'<div class="banner" style="background:var(--bg-warn);border:1px solid rgba(184,92,0,.35)" onclick="openSheet(\'agentSheet\')"><span class="bic" style="background:var(--warn)"></span><div class="grow"><div class="bt">4 नेटबॉक्स वापसी में है</div><div class="bs">नेटबॉक्स वापस न करने पर उसे गुम मार्क कर दिया जाएगा।</div></div>'+chevW+'</div>',
     prenudge:'<div class="banner" style="background:var(--bg-warn);border:1px solid rgba(184,92,0,.3)" onclick="go(\'blocker\')"><span class="bic" style="background:var(--pending)"></span><div class="grow"><div class="bt">10 नेटबॉक्स लौटाना बाकी</div><div class="bs">7 दिन में लौटा दें, नहीं तो गुम मान लिए जाएंगे।</div></div>'+chevW+'</div>',
     refund:'<div class="banner" style="background:var(--bg-pos);border:1px solid rgba(0,128,67,.3)" onclick="openSheet(\'refundSheet\')"><span class="bic" style="background:var(--pos);display:grid;place-items:center"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="#fff"/></svg></span><div class="grow"><div class="bt">NB-CUST-02 वापस मिल गया</div><div class="bs">इसके गुम होने पर जो पैसे कटे थे, वो वापस किए जा रहे हैं।</div></div>'+chevG+'</div>'
   };
   let _scenario='agent';
   function bannerHTML(s){
-    if(s==='prenudge'){var one=_lossN===1;return '<div class="banner" style="background:var(--bg-warn);border:1px solid rgba(184,92,0,.3)" onclick="go(\'blocker\')"><span class="bic" style="background:var(--pending)"></span><div class="grow"><div class="bt">'+_lossN+' नेटबॉक्स लौटाना बाकी</div><div class="bs">7 दिन में लौटा दें, नहीं तो '+(one?'गुम मान लिया जाएगा':'गुम मान लिए जाएंगे')+'।</div></div>'+chevW+'</div>';}
+    if(s==='prenudge'){var one=_lossN===1;return '<div class="banner" style="background:var(--bg-warn);border:1px solid rgba(184,92,0,.3)" onclick="'+(one?'openBreakdown()':'go(\'blocker\')')+'"><span class="bic" style="background:var(--pending)"></span><div class="grow"><div class="bt">'+_lossN+' नेटबॉक्स लौटाना बाकी</div><div class="bs">7 दिन में लौटा दें, नहीं तो '+(one?'गुम मान लिया जाएगा':'गुम मान लिए जाएंगे')+'।</div></div>'+chevW+'</div>';}
     return BANNERS[s]||BANNERS.agent;
   }
   function setScenario(s){_scenario=s;const el=document.getElementById('homeBanner');if(el)el.innerHTML=bannerHTML(s);}
@@ -761,7 +762,7 @@
     closeNotif(); setScenario('agent'); _lostMode='auto'; _returnCtx='lost';
     if(j==='A'){ go('nbhome'); }
     // B — notify (C-11); if missed (not tapped in time) → fall through to the unmissable blocker
-    else if(j==='B'){ go('home'); setTimeout(()=>showNotif(_lossN+' नेटबॉक्स गुम पाया गया','अगले 30 दिनों में ₹'+fmtN(lossTotal())+' रिकवर की जाएगी। डिटेल देखें।',openBreakdown,()=>go('blocker')),380); }
+    else if(j==='B'){ go('home'); setTimeout(()=>showNotif(_lossN+' नेटबॉक्स गुम पाया गया','अगले 30 दिनों में ₹'+fmtN(lossTotal())+' रिकवर की जाएगी। डिटेल देखें।',openBreakdown,function(){if(_lossN===1){openBreakdown();}else{go('blocker');}}),380); }
     else if(j==='C'){ go('home'); }
     else if(j==='D'){ go('home'); setTimeout(()=>showNotif('NB-CUST-02 वापस मिल गया','इसके गुम होने पर कटे ₹1,500 वापस किए जा रहे हैं। देखें।',()=>{go('home');openSheet('refundSheet');}),380); }
   }
