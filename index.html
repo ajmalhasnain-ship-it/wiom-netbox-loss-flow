@@ -334,7 +334,7 @@
         <div class="warncirc" style="background:var(--pos)"><svg width="38" height="38" viewBox="0 0 24 24"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="#fff"/></svg></div>
         <div class="h1" style="font-size:22px">नेटबॉक्स गुम मार्क कर दिया गया</div>
         <div class="sub">अगले 30 दिनों में ₹1,888 की रिकवरी की जाएगी। मिल जाए तो पूरे पैसे वापस।</div>
-        <div class="cta primary stickycta" onclick="go('lost')">ठीक है</div>
+        <div class="cta primary stickycta" onclick="lostGo('declared')">ठीक है</div>
       </div>
 
       <div class="notif" id="notif" onclick="notifTap()">
@@ -636,12 +636,13 @@
       '<div class="card"><div class="bold" style="font-size:14px">क्या करें</div><div class="b13" style="margin-top:8px">यह नेटबॉक्स आपको रिसीव हुआ है। इसे ग्राहक के पास लगाएँ या व्योम को वापस करें।</div></div>'+
       tl([['आपके पास आया','नेट बॉक्स आपको रिसीव हुआ','2026-05-05 से','var(--brand)']])+
       '</div><div class="stickybar"><div class="cta primary" onclick="toast(\'वापसी शुरू\')">वापस करें</div><div class="cta outline" onclick="openSheet(\'confirmSheet\')">गुम हो गया</div></div>'+CONFIRM_SHEET(),
-    lost:()=>devHead('NB-GUM-10')+'<div class="body pad gap12" style="padding-bottom:96px">'+
-      '<div class="statusban" style="background:var(--bg-neg)"><div class="circ" style="background:var(--neg)">'+ICON.lost+'</div><div class="grow"><div class="t">गुम बताया गया है</div><div class="s">रिकवरी राशि लगेगी — पूरा मूल्य</div></div></div>'+
-      '<div class="card"><div class="bold" style="font-size:14px">क्या करें</div><div class="b13" style="margin-top:8px">रिकवरी राशि आपके वॉलेट से कटेगी। नेटबॉक्स वापस मिलने पर व्योम को वापस करें और नेटबॉक्स राशि वापस पाएँ।</div></div>'+
-      tl([['गुम बताया गया','समय पर नहीं लौटाया — गुम मार्क हुआ','2026-06-25 से','var(--brand)'],['कनेक्शन हटा','Customer disconnected','2026-06-20 से','var(--hint)'],['आपके पास आया','नेट बॉक्स आपको रिसीव हुआ','2026-03-20 से','var(--hint)']])+
-      '<div class="link" style="text-align:center" onclick="toast(\'मदद — सपोर्ट से जुड़ रहे हैं\')">मदद चाहिए?</div>'+
-      '</div><div class="cta primary stickycta" onclick="go(\'returning\')">वापस करें</div>',
+    lost:()=>{const d=(_lostMode==='declared');return devHead('NB-GUM-10')+'<div class="body pad gap12" style="padding-bottom:96px">'+
+      '<div class="statusban" style="background:var(--bg-neg)"><div class="circ" style="background:var(--neg)">'+ICON.lost+'</div><div class="grow"><div class="t">'+(d?'गुम बताया गया है':'गुम पाया गया')+'</div><div class="s">'+(d?'रिकवरी राशि व्योम को देनी पड़ेगी':'रिकवरी राशि काट ली गई है')+'</div></div></div>'+
+      '<div class="card"><div class="bold" style="font-size:14px">क्या करें</div><div class="b13" style="margin-top:8px">'+(d?'रिकवरी राशि आपके वॉलेट से कटेगी। नेटबॉक्स वापस मिलने पर व्योम को वापस करें और राशि वापस पाएँ।':'नेटबॉक्स वापस मिलने पर व्योम को वापस करें और राशि वापस पाएँ। नेट बॉक्स का ध्यान रखें।')+'</div></div>'+
+      '<div class="card"><div class="lbl" style="margin-bottom:6px">पैसे कितने कटे</div><div class="semi" style="font-size:14px">कैरी शुल्क: <span class="num">₹200</span></div><div class="b12" style="margin-top:2px">100 दिन × ₹2/दिन = ₹200</div><div class="semi" style="font-size:14px;margin-top:12px">नुकसान वसूली: <span class="num">₹212</span></div><div class="b12" style="margin-top:2px">डिवाइस प्रकार: राउटर · उम्र: 44 महीने</div><div class="b12">36+ बैंड (20% रिकवरी) · ₹1,062 × 20% = ₹212</div></div>'+
+      tl([[(d?'गुम बताया गया':'गुम पाया गया'),(d?'CSP ने गुम बताया — रिकवरी लगेगी':'Recovery amount deducted'),'2026-06-25 से','var(--brand)'],['कनेक्शन हटा','Customer disconnected','2026-06-20 से','var(--hint)'],['आपके पास आया','नेट बॉक्स आपको रिसीव हुआ','2026-03-20 से','var(--hint)']])+
+      '<div class="link" style="text-align:center" onclick="toast(\'सहायता — सपोर्ट से जुड़ रहे हैं\')">सहायता के लिए संपर्क करें</div>'+
+      '</div><div class="cta primary stickycta" onclick="go(\'returning\')">नेट बॉक्स मिल गया वापस करें</div>';},
     returning:()=>devHead('NB-GUM-10')+'<div class="body pad gap12" style="padding-bottom:96px">'+
       '<div class="statusban" style="background:var(--bg-info)"><div class="circ" style="background:var(--info)">'+ICON.truck+'</div><div class="grow"><div class="t">वापस होने की प्रक्रिया में</div><div class="s">जल्द पिकअप होगा</div></div></div>'+
       '<div class="card"><div class="bold" style="font-size:14px">क्या करें</div><div class="b13" style="margin-top:8px">नेट बॉक्स तैयार रखें। पिकअप टीम आपसे संपर्क करेगी।</div></div>'+
@@ -691,6 +692,8 @@
 
   /* ---------- nav ---------- */
   const DYN=['idle','lost','returning','returned','idle_warn','carryfee','custodied','damaged'];
+  let _lostMode='auto'; // 'auto' = गुम पाया गया (system) · 'declared' = गुम बताया गया है (CSP)
+  function lostGo(m){_lostMode=m;go('lost');}
   function go(k){
     document.querySelectorAll('.overlay').forEach(o=>o.classList.remove('open'));
     // dynamic device screens: some keys map to the same shell but different content
@@ -721,7 +724,7 @@
   function notifTap(){_ntapped=true;closeNotif();if(typeof _ntarget==='function')_ntarget();else if(_ntarget)go(_ntarget);}
   function startJourney(j){
     document.querySelectorAll('.jbtn').forEach(b=>b.classList.toggle('on',b.dataset.j===j));
-    closeNotif(); setScenario('agent');
+    closeNotif(); setScenario('agent'); _lostMode='auto';
     if(j==='A'){ go('nbhome'); }
     // B — notify (C-11); if missed (not tapped in time) → fall through to the unmissable blocker
     else if(j==='B'){ go('home'); setTimeout(()=>showNotif('10 नेटबॉक्स गुम मार्क हुए','अगले 30 दिनों में ₹10,620 रिकवर की जाएगी। ब्यौरा देखें।','breakdown',()=>go('blocker')),380); }
