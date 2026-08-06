@@ -669,10 +669,11 @@
       tl([['खराब बताया गया','डैमेज रिपोर्ट हुई','अभी','var(--neg)'],['आपके पास आया','नेट बॉक्स आपको रिसीव हुआ','2026-03-20 से','var(--hint)']])+
       '</div><div class="cta primary stickycta" onclick="toast(\'वापसी शुरू\')">वापस करें</div>'
   };
-  function CONFIRM_SHEET(){return '<div class="overlay" id="confirmSheet"><div class="scrim" onclick="closeSheet(\'confirmSheet\')"></div><div class="sheet center"><div class="handle"></div><div class="inner">'+
-    '<div class="badge80"><svg width="40" height="40" viewBox="0 0 24 24"><path d="M15.73 3H8.27L3 8.27v7.46L8.27 21h7.46L21 15.73V8.27L15.73 3zM12 17.3c-.72 0-1.3-.58-1.3-1.3s.58-1.3 1.3-1.3 1.3.58 1.3 1.3-.58 1.3-1.3 1.3zm1-4.3h-2V7h2v6z" fill="#D9008D"/></svg></div>'+
-    '<div style="font-size:16px;font-weight:700;margin-top:16px;color:var(--text)">नेटबॉक्स गुम मार्क करने से पहले ध्यान से पढ़ें</div>'+
-    '<div class="semi" style="font-size:14px;text-align:left;width:100%;margin-top:24px;color:var(--text)">अगले 30 दिनों में आपके वॉलेट से ₹1,888 रिकवर की जाएगी</div>'+
+  function CONFIRM_SHEET(){return '<div class="overlay" id="confirmSheet"><div class="scrim" onclick="closeSheet(\'confirmSheet\')"></div><div class="sheet"><div class="handle"></div><div class="inner">'+
+    '<div style="display:flex;gap:12px;align-items:flex-start">'+
+    '<div class="badge80" style="width:48px;height:48px;flex:0 0 auto;background:var(--bg-neg)"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M15.73 3H8.27L3 8.27v7.46L8.27 21h7.46L21 15.73V8.27L15.73 3zM12 17.3c-.72 0-1.3-.58-1.3-1.3s.58-1.3 1.3-1.3 1.3.58 1.3 1.3-.58 1.3-1.3 1.3zm1-4.3h-2V7h2v6z" fill="#D92130"/></svg></div>'+
+    '<div style="font-size:20px;font-weight:700;line-height:1.4;color:var(--text)">नेटबॉक्स गुम मार्क करने से पहले ध्यान से पढ़ें</div></div>'+
+    '<div class="semi" style="font-size:14px;margin-top:16px;color:var(--text)">अगले 30 दिनों में ₹1,888 रिकवर की जाएगी</div>'+
     '<div class="breakbox" style="margin-top:4px"><div class="semi" style="font-size:14px;color:var(--text)">रिकवरी का डिटेल</div><div class="b12" style="margin-top:4px">नेटबॉक्स रेट (ONT): <span class="num">₹1,888</span></div><div class="b12">उम्र के हिसाब से कटौती: <span class="num">100%</span> · 3 महीने</div><div class="b12">₹1,888 × 100% = ₹1,888</div><div class="divider" style="margin:8px 0"></div><div class="bold red num" style="font-size:16px">₹1,888</div></div>'+
     '<div class="b12 green" style="margin-top:4px">नेटबॉक्स लौटाने पर पूरे पैसे वापस हो जाएंगे।</div>'+
     '<div class="cta primary" style="width:100%;margin-top:16px" onclick="closeSheet(\'confirmSheet\');lostGo(\'declared\')">हाँ, गुम हो गया है</div>'+
