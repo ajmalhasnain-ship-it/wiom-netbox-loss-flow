@@ -342,7 +342,7 @@
         <button class="jbtn" data-j="B" onclick="startJourney('B')"><b>B · Auto-lost recovery</b><span>Push notification (C-11) — <b>tap</b> → recovery breakdown · <b>missed</b> (don’t tap) → fallback blocker → breakdown → LOST → returning</span></button>
         <button class="jbtn" data-j="C" onclick="startJourney('C')"><b>C · Agent recovery</b><span>Home agent banner → NetBox Home → agent sheet → device</span></button>
         <button class="jbtn" data-j="D" onclick="startJourney('D')"><b>D · Recovered &amp; refund</b><span>Refund notification → refund detail (₹1,500) · returning → returned</span></button>
-        <button class="jbtn" data-j="E" onclick="startJourney('E')"><b>E · Customer non-recovery <span style="color:var(--warn)">Path B</span></b><span>Deployed → customer disconnects → recovery pending → 30 days missed → notification → गुम मान लिया गया · flat ₹200 from Security Deposit</span></button>
+        <button class="jbtn" data-j="E" onclick="startJourney('E')"><b>E · Customer non-recovery <span style="color:var(--warn)">Path B</span></b><span>Deployed → customer disconnects → recovery pending → 30 days missed → notification → गुम पाया गया · flat ₹200 from Security Deposit</span></button>
       </div>
       <div class="ctl-card"><h4>Jump to any device state</h4>
         <div class="seg" id="stateSeg">
@@ -617,8 +617,8 @@
       tl([['कनेक्शन हटा','Customer disconnected','2026-06-20 से','var(--brand)'],['कनेक्शन पर लगा','Installed at customer','2026-04-01 से','var(--hint)'],['आपके पास आया','नेट बॉक्स आपको रिसीव हुआ','2026-03-20 से','var(--hint)']])+
       '</div><div class="stickybar"><div class="cta primary" onclick="toast(\'वापसी शुरू — पिकअप टीम संपर्क करेगी\')">वापस करें</div><div class="cta outline" onclick="openSheet(\'confirmSheet\')">गुम हो गया</div></div>'+CONFIRM_SHEET(),
     idle_warn:()=>devHead('NB-IDLE-02')+'<div class="body pad gap12" style="padding-bottom:150px">'+
-      '<div class="statusban" style="background:var(--bg-warn)"><div class="circ" style="background:var(--warn)">'+ICON.router+'</div><div class="grow"><div class="t">लौटाने का समय आ रहा है</div><div class="s">जल्दी लौटाएँ, वरना गुम मान लिया जाएगा</div></div></div>'+
-      '<div class="card"><div class="bold" style="font-size:14px">क्या करें</div><div class="b13" style="margin-top:8px">यह नेटबॉक्स जल्द व्योम को लौटाएँ। समय पर न लौटाने पर यह गुम मान लिया जाएगा और पैसे कट सकते हैं।</div></div>'+
+      '<div class="statusban" style="background:var(--bg-warn)"><div class="circ" style="background:var(--warn)">'+ICON.router+'</div><div class="grow"><div class="t">लौटाने का समय आ रहा है</div><div class="s">जल्दी लौटाएँ, वरना गुम पाया जाएगा</div></div></div>'+
+      '<div class="card"><div class="bold" style="font-size:14px">क्या करें</div><div class="b13" style="margin-top:8px">यह नेटबॉक्स जल्द व्योम को लौटाएँ। समय पर न लौटाने पर यह गुम पाया जाएगा और पैसे कट सकते हैं।</div></div>'+
       tl([['लौटाना बाकी','7 दिन में लौटा दें','अभी','var(--warn)'],['आपके पास आया','नेट बॉक्स आपको रिसीव हुआ','2026-03-20 से','var(--hint)']])+
       '</div><div class="stickybar"><div class="cta primary" onclick="toast(\'वापसी शुरू\')">वापस करें</div><div class="cta outline" onclick="openSheet(\'confirmSheet\')">गुम हो गया</div></div>'+CONFIRM_SHEET(),
     carryfee:()=>devHead('NB-IDLE-03')+'<div class="body pad gap12" style="padding-bottom:150px">'+
@@ -639,10 +639,10 @@
       '<div class="link" style="text-align:center" onclick="toast(\'सहायता — सपोर्ट से जुड़ रहे हैं\')">सहायता के लिए संपर्क करें</div>'+
       '</div><div class="stickywrap"><div class="ctahint">नेट बॉक्स मिल जाए तो वापस करें — रिकवरी रुक जाएगी, कोई पैसा नहीं कटेगा।</div><div class="cta primary" onclick="_returnCtx=\'lost\';go(\'returning\')">वापस करें</div></div>';},
     nonrecovery:()=>devHead('NB-NREC-01')+'<div class="body pad gap12" style="padding-bottom:96px">'+
-      '<div class="statusban" style="background:var(--bg-neg)"><div class="circ" style="background:var(--neg)">'+ICON.lost+'</div><div class="grow"><div class="t">गुम मान लिया गया</div><div class="s">कस्टमर से वापस नहीं आया</div></div></div>'+
-      '<div class="card"><div class="bold" style="font-size:14px">क्या करें</div><div class="b13" style="margin-top:8px">यह नेटबॉक्स कस्टमर से 30 दिन में वापस नहीं आया, इसलिए गुम मान लिया गया। मिल जाए तो व्योम को वापस करें — ₹200 सिक्योरिटी डिपॉज़िट में वापस आ जाएँगे।</div><div class="b13" style="color:var(--warn);font-weight:700;margin-top:6px">वापस न करने पर ₹200 सिक्योरिटी डिपॉज़िट से कटेंगे।</div></div>'+
+      '<div class="statusban" style="background:var(--bg-neg)"><div class="circ" style="background:var(--neg)">'+ICON.lost+'</div><div class="grow"><div class="t">गुम पाया गया</div><div class="s">कस्टमर से वापस नहीं आया</div></div></div>'+
+      '<div class="card"><div class="bold" style="font-size:14px">क्या करें</div><div class="b13" style="margin-top:8px">यह नेटबॉक्स कस्टमर से 30 दिन में वापस नहीं आया, इसलिए गुम पाया गया। मिल जाए तो व्योम को वापस करें — ₹200 सिक्योरिटी डिपॉज़िट में वापस आ जाएँगे।</div><div class="b13" style="color:var(--warn);font-weight:700;margin-top:6px">वापस न करने पर ₹200 सिक्योरिटी डिपॉज़िट से कटेंगे।</div></div>'+
       '<div class="card"><div class="lbl" style="margin-bottom:2px">कितनी रिकवरी होगी</div><div class="b12" style="margin-bottom:8px">रेट कार्ड नहीं — कस्टमर से न लौटने पर तय राशि</div><div class="semi" style="font-size:14px">फ्लैट राशि: <span class="num">₹200</span></div><div class="b12" style="margin-top:2px">आपकी सिक्योरिटी डिपॉज़िट से काटे जाएँगे (वॉलेट से नहीं)</div><div class="b12">डिपॉज़िट कम हो तो कटौती अगले चक्र में — तब तक टॉप-अप की सूचना मिलेगी।</div></div>'+
-      tl([['गुम मान लिया गया','कस्टमर से वापस नहीं आया — ₹200 सिक्योरिटी डिपॉज़िट से','2026-06-25 से','var(--neg)'],['कस्टमर से लाना था','रिकवरी विंडो (30 दिन)','2026-05-25 से','var(--hint)'],['कनेक्शन हटा','Customer disconnected','2026-05-20 से','var(--hint)']])+
+      tl([['गुम पाया गया','कस्टमर से वापस नहीं आया — ₹200 सिक्योरिटी डिपॉज़िट से','2026-06-25 से','var(--neg)'],['कस्टमर से लाना था','रिकवरी विंडो (30 दिन)','2026-05-25 से','var(--hint)'],['कनेक्शन हटा','Customer disconnected','2026-05-20 से','var(--hint)']])+
       '<div class="link" style="text-align:center" onclick="toast(\'सहायता — सपोर्ट से जुड़ रहे हैं\')">सहायता के लिए संपर्क करें</div>'+
       '</div><div class="stickywrap"><div class="ctahint">नेट बॉक्स मिल जाए तो वापस करें — ₹200 सिक्योरिटी डिपॉज़िट में वापस।</div><div class="cta primary" onclick="_returnCtx=\'lost\';go(\'returning\')">वापस करें</div></div>',
     deducted:()=>{var p=(_dedMode==='partial');return devHead('NB-GUM-10')+'<div class="body pad gap12" style="padding-bottom:96px">'+
@@ -656,7 +656,7 @@
       '<div class="statusban" style="background:var(--bg-info)"><div class="circ" style="background:var(--info)">'+ICON.truck+'</div><div class="grow"><div class="t">वापस होने की प्रक्रिया में</div><div class="s">'+(ag?'व्योम एजेंट को सौंपें':'जल्द पिकअप होगा')+'</div></div></div>'+
       '<div class="card"><div class="bold" style="font-size:14px">क्या करें</div><div class="b13" style="margin-top:8px">'+(ag?'यह नेटबॉक्स व्योम एजेंट को सौंप दें। सौंपते ही वापसी पूरी हो जाएगी।':'नेट बॉक्स तैयार रखें। पिकअप टीम आपसे संपर्क करेगी।')+'</div><div class="b13" style="color:var(--warn);font-weight:700;margin-top:6px">वापस न करने पर गुम मार्क कर दिया जाएगा।</div></div>'+
       (ag?'':'<div class="costcard"><div class="b12" style="text-transform:uppercase;letter-spacing:.04em">कितनी रिकवरी होगी</div><div class="bold" style="font-size:16px;margin-top:4px">नुकसान वसूली: <span class="num">₹212</span></div><div class="b12" style="margin-top:4px">डिवाइस प्रकार: राउटर<br>उम्र: 44 महीने<br>₹1,062 × 20% = ₹212</div></div>')+
-      tl(ag?[['वापसी में','एजेंट को सौंपना है','अभी','var(--info)'],['आपके पास आया','नेट बॉक्स आपको रिसीव हुआ','2026-03-20 से','var(--hint)']]:[['वापसी शुरू','नेट बॉक्स सही बताया — वापसी का अनुरोध','अभी','var(--brand)'],['गुम बताया गया','समय पर नहीं लौटाया','2026-06-25 से','var(--hint)'],['आपके पास आया','नेट बॉक्स आपको रिसीव हुआ','2026-03-20 से','var(--hint)']])+
+      tl(ag?[['वापसी में','एजेंट को सौंपना है','अभी','var(--info)'],['आपके पास आया','नेट बॉक्स आपको रिसीव हुआ','2026-03-20 से','var(--hint)']]:[['वापसी शुरू','नेट बॉक्स सही बताया — वापसी का अनुरोध','अभी','var(--brand)'],['गुम पाया गया','समय पर नहीं लौटाया','2026-06-25 से','var(--hint)'],['आपके पास आया','नेट बॉक्स आपको रिसीव हुआ','2026-03-20 से','var(--hint)']])+
       '</div><div class="stickybar"><div class="cta outline" onclick="'+(ag?'openSheet(\'confirmSheet\')':'toast(\'गुम मार्क — रिकवरी जारी रहेगी\')')+'">गुम हो गया</div></div>'+(ag?CONFIRM_SHEET():'');},
     retpending:()=>devHead(_agentBox||'NB-IDLE-01')+'<div class="body pad gap12" style="padding-bottom:96px">'+
       '<div class="statusban" style="background:var(--bg-info)"><div class="circ" style="background:var(--info)">'+ICON.truck+'</div><div class="grow"><div class="t">वापसी में है</div><div class="s">व्योम एजेंट को सौंपना है</div></div></div>'+
@@ -666,7 +666,7 @@
     returned:()=>devHead('NB-CUST-02')+'<div class="body pad gap12" style="padding-bottom:96px">'+
       '<div class="statusban" style="background:var(--bg-pos)"><div class="circ" style="background:var(--pos)">'+ICON.check+'</div><div class="grow"><div class="t">वापस मिल गया</div><div class="s">व्योम को रिसीव हो गया — पैसे वापस किए जा रहे हैं</div></div></div>'+
       '<div class="card"><div class="bold" style="font-size:14px">क्या करें</div><div class="b13" style="margin-top:8px">कुछ नहीं करना है। इसके गुम होने पर कटे पैसे आपको वापस किए जा रहे हैं।</div><div class="link" style="margin-top:8px" onclick="go(\'home\');openSheet(\'refundSheet\')">रिफ़ंड का हिसाब देखें</div></div>'+
-      tl([['वापस मिल गया','व्योम को रिसीव हुआ — रिफ़ंड जारी','अभी','var(--pos)'],['गुम बताया गया','समय पर नहीं लौटाया','2026-06-25 से','var(--hint)']])+
+      tl([['वापस मिल गया','व्योम को रिसीव हुआ — रिफ़ंड जारी','अभी','var(--pos)'],['गुम पाया गया','समय पर नहीं लौटाया','2026-06-25 से','var(--hint)']])+
       '</div>',
     damaged:()=>devHead('NB-DMGD-01')+'<div class="body pad gap12" style="padding-bottom:96px">'+
       '<div class="statusban" style="background:var(--bg-neg)"><div class="circ" style="background:var(--neg)">'+ICON.build+'</div><div class="grow"><div class="t">खराब बताया गया है</div><div class="s">मरम्मत/रिकवरी राशि लग सकती है</div></div></div>'+
@@ -759,12 +759,12 @@
   const chevG='<svg width="20" height="20" viewBox="0 0 24 24"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z" fill="#008043"/></svg>';
   const BANNERS={
     agent:'<div class="banner" style="background:var(--bg-warn);border:1px solid #E2B203" onclick="openSheet(\'agentSheet\')"><div class="grow"><div class="bt">4 नेटबॉक्स वापसी में है</div><div class="bs">नेटबॉक्स वापस न करने पर उसे गुम मार्क कर दिया जाएगा।</div></div>'+chevW+'</div>',
-    prenudge:'<div class="banner" style="background:var(--bg-warn);border:1px solid #E2B203" onclick="go(\'blocker\')"><div class="grow"><div class="bt">10 नेटबॉक्स लौटाना बाकी</div><div class="bs">7 दिन में लौटा दें, नहीं तो गुम मान लिए जाएंगे।</div></div>'+chevW+'</div>',
+    prenudge:'<div class="banner" style="background:var(--bg-warn);border:1px solid #E2B203" onclick="go(\'blocker\')"><div class="grow"><div class="bt">10 नेटबॉक्स लौटाना बाकी</div><div class="bs">7 दिन में लौटा दें, नहीं तो गुम पाए जाएंगे।</div></div>'+chevW+'</div>',
     refund:'<div class="banner" style="background:var(--bg-pos);border:1px solid rgba(0,128,67,.3)" onclick="openSheet(\'refundSheet\')"><span class="bic" style="background:var(--pos);display:grid;place-items:center"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="#fff"/></svg></span><div class="grow"><div class="bt">NB-CUST-02 वापस मिल गया</div><div class="bs">इसके गुम होने पर जो पैसे कटे थे, वो वापस किए जा रहे हैं।</div></div>'+chevG+'</div>'
   };
   let _scenario='agent';
   function bannerHTML(s){
-    if(s==='prenudge'){var one=_lossN===1;return '<div class="banner" style="background:var(--bg-warn);border:1px solid #E2B203" onclick="'+(one?'openBreakdown()':'go(\'blocker\')')+'"><div class="grow"><div class="bt">'+_lossN+' नेटबॉक्स लौटाना बाकी</div><div class="bs">7 दिन में लौटा दें, नहीं तो '+(one?'गुम मान लिया जाएगा':'गुम मान लिए जाएंगे')+'।</div></div>'+chevW+'</div>';}
+    if(s==='prenudge'){var one=_lossN===1;return '<div class="banner" style="background:var(--bg-warn);border:1px solid #E2B203" onclick="'+(one?'openBreakdown()':'go(\'blocker\')')+'"><div class="grow"><div class="bt">'+_lossN+' नेटबॉक्स लौटाना बाकी</div><div class="bs">7 दिन में लौटा दें, नहीं तो '+(one?'गुम पाया जाएगा':'गुम पाए जाएंगे')+'।</div></div>'+chevW+'</div>';}
     return BANNERS[s]||BANNERS.agent;
   }
   function setScenario(s){_scenario=s;const el=document.getElementById('homeBanner');if(el)el.innerHTML=bannerHTML(s);}
@@ -781,7 +781,7 @@
     else if(j==='B'){ go('home'); setTimeout(()=>showNotif(_lossN+' नेटबॉक्स गुम पाया गया','अगले 30 दिनों में ₹'+fmtN(lossTotal())+' रिकवर की जाएगी। डिटेल देखें।',openBreakdown,function(){if(_lossN===1){openBreakdown();}else{go('blocker');}}),380); }
     else if(j==='C'){ go('home'); }
     else if(j==='D'){ go('home'); setTimeout(()=>showNotif('NB-CUST-02 वापस मिल गया','इसके गुम होने पर कटे ₹1,500 वापस किए जा रहे हैं। देखें।',()=>{go('home');openSheet('refundSheet');}),380); }
-    else if(j==='E'){ go('home'); setTimeout(()=>showNotif('1 नेटबॉक्स कस्टमर से वापस नहीं आया','गुम मान लिया गया — ₹200 आपकी सिक्योरिटी डिपॉज़िट से काटे जाएँगे। डिटेल देखें।',()=>go('nonrecovery'),()=>go('nonrecovery')),380); }
+    else if(j==='E'){ go('home'); setTimeout(()=>showNotif('1 नेटबॉक्स कस्टमर से वापस नहीं आया','गुम पाया गया — ₹200 आपकी सिक्योरिटी डिपॉज़िट से काटे जाएँगे। डिटेल देखें।',()=>go('nonrecovery'),()=>go('nonrecovery')),380); }
   }
   document.querySelectorAll('#stateSeg button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#stateSeg button').forEach(x=>x.setAttribute('aria-pressed','false'));b.setAttribute('aria-pressed','true');if(b.dataset.ded)_dedMode=b.dataset.ded;go(b.dataset.dev);});
 
