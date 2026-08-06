@@ -372,7 +372,7 @@
   <ol class="steps">
     <li><b>NetBox Home <span class="schip">hub</span></b><span class="arrow">Total, distribution, अभी ध्यान दें, एजेंट विज़िट. Tap “सभी नेटबॉक्स देखें” / a device →</span></li>
     <li><b>Device · IDLE <span class="schip">state IDLE</span></b><span class="arrow">Green “नए कनेक्शन पर सेटअप करें”, “45 दिनों से आपके पास”, कटौती का हिसाब देखें expands the age-band breakup. CTAs: वापस करें · गुम हो गया →</span></li>
-    <li><b>Confirm sheet <span class="schip">charge warning</span></b><span class="arrow">Pink Report badge, “नेटबॉक्स गुम मार्क करने से पहले ध्यान से पढ़ें”, ₹1,888 in red + कटौती का ब्यौरा, wallet + refund notes. हाँ, गुम हो गया है / रुकें → lands directly on LOST (no success interstitial) →</span></li>
+    <li><b>Confirm sheet <span class="schip">charge warning</span></b><span class="arrow">Pink Report badge, “नेटबॉक्स गुम मार्क करने से पहले ध्यान से पढ़ें”, ₹1,888 in red + कटौती का डिटेल, wallet + refund notes. हाँ, गुम हो गया है / रुकें → lands directly on LOST (no success interstitial) →</span></li>
     <li><b>Device · LOST <span class="schip">state LOST</span></b><span class="arrow">Red “गुम बताया गया है · अगले 30 दिनों में रिकवरी होगी”, कितनी रिकवरी होगी (अभी कुछ नहीं कटा), timeline, मदद चाहिए?. CTA: वापस करें (found → hand back) →</span></li>
     <li><b>Device · RETURNING <span class="schip">RETRIEVAL_PENDING</span></b><span class="arrow">Purple “वापस होने की प्रक्रिया में · पिकअप होगा”. On successful pickup → refund (Journey D).</span></li>
   </ol>
@@ -382,7 +382,7 @@
   <ol class=”steps”>
     <li><b>Return window · pre-nudge <span class=”schip”>grace</span></b><span class=”arrow”>Return reminder while the window is open. Window lapses → system raises the Loss Charge (RecoverableDue) →</span></li>
     <li><b>Push notification <span class=”schip”>C-11 · ≤5s</span></b><span class=”arrow”>“10 नेटबॉक्स गुम पाया गया · अगले 30 दिनों में ₹10,620 रिकवर की जाएगी। डिटेल देखें।” Tap →</span></li>
-    <li><b>रिकवरी का ब्यौरा <span class=”schip”>pending → recovering</span></b><span class=”arrow”>Status chip + all 10 boxes itemised (type · age · band · ₹) → कुल रिकवरी ₹10,620, and the collection waterfall (वॉलेट → अगली पेमेंट, ₹500 floor). Tap any row →</span></li>
+    <li><b>रिकवरी का डिटेल <span class=”schip”>pending → recovering</span></b><span class=”arrow”>Status chip + all 10 boxes itemised (type · age · band · ₹) → कुल रिकवरी ₹10,620, and the collection waterfall (वॉलेट → अगली पेमेंट, ₹500 floor). Tap any row →</span></li>
     <li><b>Device · LOST <span class=”schip”>state LOST</span></b><span class=”arrow”>That box’s LOST page. वापस करें →</span></li>
     <li><b>Device · RETURNING <span class=”schip”>RETRIEVAL_PENDING</span></b><span class=”arrow”>Same recovery tail as Journey A → Returned → refund.</span></li>
   </ol>
@@ -428,7 +428,7 @@
     <thead><tr><th>State</th><th>Home entry</th><th>Device banner</th><th>Primary action</th><th>Meaning</th></tr></thead>
     <tbody>
       <tr><td><span class="st">AUTOLOST · pre</span> <span class="pill warn">reminder</span><span class="cause">grace window before auto-loss</span></td><td class="home deva">return reminder · {n} नेटबॉक्स लौटाना बाकी</td><td class="deva">—</td><td class="deva">—</td><td>return now or they’ll be marked lost</td></tr>
-      <tr><td><span class="st">AUTOLOST · post</span> <span class="pill info">notify (C-11)</span><span class="cause">window lapsed — system marked lost</span></td><td class="home deva">Push notification · <span style="color:var(--ink-3)">(missed → home blocker)</span></td><td class="banner deva">→ रिकवरी का ब्यौरा · pending→recovering · ₹10,620</td><td class="deva">ब्यौरा देखें</td><td>notify (C-11); blocker = unmissable fallback so the charge stays visible</td></tr>
+      <tr><td><span class="st">AUTOLOST · post</span> <span class="pill info">notify (C-11)</span><span class="cause">window lapsed — system marked lost</span></td><td class="home deva">Push notification · <span style="color:var(--ink-3)">(missed → home blocker)</span></td><td class="banner deva">→ रिकवरी का डिटेल · pending→recovering · ₹10,620</td><td class="deva">डिटेल देखें</td><td>notify (C-11); blocker = unmissable fallback so the charge stays visible</td></tr>
       <tr><td><span class="st">LOST</span> <span class="pill gap">charged</span><span class="cause">CSP-marked or auto-lost</span></td><td class="deva">via breakdown row</td><td class="banner deva">गुम बताया गया है · रिकवरी राशि लगेगी — पूरा मूल्य</td><td class="deva">वापस करें (found → hand back)</td><td>recovery from wallet over 30 days</td></tr>
       <tr><td><span class="st">LOST · settled</span><span class="cause">recovery complete</span></td><td class="deva">—</td><td class="banner deva">गुम — पूरी रिकवरी हो चुकी</td><td class="deva">—</td><td>money already recovered; terminal</td></tr>
     </tbody>
@@ -504,7 +504,7 @@
   <span class="k">amount_display</span>: <span class="s">"378"</span>, <span class="k">device_type</span>: <span class="s">"ONT"</span>,
   <span class="k">window_days</span>: <span class="n">30</span>,
   <span class="k">breakdown_lines</span>: [ <span class="s">"डिवाइस प्रकार: ONT"</span>,
-    <span class="s">"उम्र: 40 महीने (36+ बैंड)"</span>, <span class="s">"₹1,888 × 20% = ₹378"</span> ] }
+    <span class="s">"उम्र: 40 महीने"</span>, <span class="s">"₹1,888 × 20% = ₹378"</span> ] }
 <span class="k">outcomes</span>: [{ <span class="k">type</span>: <span class="s">"device.outcome.lossRecovery"</span>, <span class="k">amount_display</span>: <span class="s">"378"</span> }]
 <span class="k">timeline</span>: [ LOST · IDLE · CUSTODIED ]</pre></div>
 
@@ -513,7 +513,7 @@
   <div class="table-scroll" style="max-width:720px"><table>
     <thead><tr><th>event</th><th>PRD ref</th><th>deep_link</th><th>surfaces as</th></tr></thead>
     <tbody>
-      <tr><td><span class="mono">LOSS_CHARGE_RAISED</span></td><td><span class="mono">T1 · C-11</span></td><td><span class="mono">/netbox/loss/post</span></td><td>push notification → रिकवरी का ब्यौरा (pending→recovering)</td></tr>
+      <tr><td><span class="mono">LOSS_CHARGE_RAISED</span></td><td><span class="mono">T1 · C-11</span></td><td><span class="mono">/netbox/loss/post</span></td><td>push notification → रिकवरी का डिटेल (pending→recovering)</td></tr>
       <tr><td><span class="mono">RECOVERY_REVERSED</span></td><td><span class="mono">R10 · T7/T8</span></td><td><span class="mono">/netbox/loss/refund</span></td><td>push notification → refund detail (₹1,500)</td></tr>
       <tr><td><span class="mono">RETURN_REMINDER</span></td><td>—</td><td><span class="mono">/netbox/agent</span></td><td>return nudge / एजेंट विज़िट (not a charge status)</td></tr>
     </tbody>
@@ -592,8 +592,8 @@
 
 <script>
   /* ---------- data ---------- */
-  const AUTO_LOST=[["NB-GUM-01","ONT","3 महीने · 0–12 बैंड (100%)","1,888","राउटर",false],["NB-GUM-02","ONT","30 महीने · 24–36 बैंड (60%)","1,133"],["NB-GUM-03","राउटर","8 महीने · 0–12 बैंड (100%)","1,062"],["NB-GUM-04","ONT","14 महीने · 12–24 बैंड (80%)","1,510"],["NB-GUM-05","राउटर","26 महीने · 24–36 बैंड (60%)","637"],["NB-GUM-06","राउटर","16 महीने · 12–24 बैंड (80%)","850"],["NB-GUM-07","ONT","40 महीने · 36+ बैंड (20%)","378"],["NB-GUM-08","ONT","5 महीने · 0–12 बैंड (100%)","1,888"],["NB-GUM-09","राउटर","6 महीने · 0–12 बैंड (100%)","1,062"],["NB-GUM-10","राउटर","44 महीने · 36+ बैंड (20%)","212"]];
-  const AGENT=[["NB-IDLE-01","राउटर · 8 महीने · 0–12 बैंड (100%)"],["NB-IDLE-03","राउटर · 26 महीने · 24–36 बैंड (60%)"],["NB-CUST-02","ONT · 30 महीने · 24–36 बैंड (60%)"],["NB-CUST-01","ONT · 3 महीने · 0–12 बैंड (100%)"]];
+  const AUTO_LOST=[["NB-GUM-01","ONT","3 महीने","1,888","राउटर",false],["NB-GUM-02","ONT","30 महीने","1,133"],["NB-GUM-03","राउटर","8 महीने","1,062"],["NB-GUM-04","ONT","14 महीने","1,510"],["NB-GUM-05","राउटर","26 महीने","637"],["NB-GUM-06","राउटर","16 महीने","850"],["NB-GUM-07","ONT","40 महीने","378"],["NB-GUM-08","ONT","5 महीने","1,888"],["NB-GUM-09","राउटर","6 महीने","1,062"],["NB-GUM-10","राउटर","44 महीने","212"]];
+  const AGENT=[["NB-IDLE-01","राउटर · 8 महीने"],["NB-IDLE-03","राउटर · 26 महीने"],["NB-CUST-02","ONT · 30 महीने"],["NB-CUST-01","ONT · 3 महीने"]];
   const TOK=[["brandPrimary","#D9008D","CTA, accent, amounts"],["brandSecondary","#4A1535","app bar, dark surfaces"],["brandTint","#FFE5F6","Report badge bg"],["bgScreen","#FAF9FC","screen bg"],["bgSurface","#FFFFFF","cards"],["textPrimary","#161021","primary text"],["textSecondary","#5C5570","secondary text"],["stateNegative","#D92130","lost / red amount"],["statePositive","#008043","refund / recovered"],["warningAccent","#E2B203","carry fee · warning (Warning_300)"],["textOnWarning","#372902","text on warning surfaces"],["bgWarningSubtle","#FFE9A1","warning banner / carry-fee bg"],["stateInfo","#6D17CE","returning / recovery (Info_600)"],["strokePrimary","#E8E4F0","borders, dividers (stroke.default)"]];
 
   /* ---------- device page renderer ---------- */
@@ -613,7 +613,7 @@
       '<div class="statusban" style="background:var(--bg-pos)"><div class="circ" style="background:var(--pos)">'+ICON.router+'</div><div class="grow"><div class="t">नए कनेक्शन पर सेटअप करें</div><div class="s">अभी कोई कैरी फीस नहीं लग रहा</div></div></div>'+
       '<div class="card"><div class="bold" style="font-size:14px">क्या करें</div><div class="b13" style="margin-top:8px">इसे जल्दी किसी ग्राहक के पास लगाएं या व्योम को वापस करें। अभी कोई कैरी फीस नहीं लग रही।</div>'+
       '<div class="semi pink" style="font-size:14px;margin-top:8px">45 दिनों से यह आपके पास है</div><div class="b12" style="margin-top:8px">ऑफिस में ज़्यादा से ज़्यादा 15 नेटबॉक्स रखने की अनुमति है। खाली नेटबॉक्स व्योम को लौटा दें। न लौटाने पर पैसे कट सकते हैं।</div>'+
-      '<div class="link" style="margin-top:8px" onclick="tb(this)">कटौती का हिसाब देखें</div><div class="breakbox" style="margin-top:8px;display:none"><div class="b12">डिवाइस प्रकार: राउटर</div><div class="b12">उम्र: 8 महीने (0–12 बैंड)</div><div class="b12">₹1,062 × 100% = ₹1,062</div><div class="semi pink num" style="font-size:14px;margin-top:4px">₹1,062</div></div></div>'+
+      '<div class="link" style="margin-top:8px" onclick="tb(this)">कटौती का हिसाब देखें</div><div class="breakbox" style="margin-top:8px;display:none"><div class="b12">डिवाइस प्रकार: राउटर</div><div class="b12">उम्र: 8 महीने</div><div class="b12">₹1,062 × 100% = ₹1,062</div><div class="semi pink num" style="font-size:14px;margin-top:4px">₹1,062</div></div></div>'+
       tl([['कनेक्शन हटा','Customer disconnected','2026-06-20 से','var(--brand)'],['कनेक्शन पर लगा','Installed at customer','2026-04-01 से','var(--hint)'],['आपके पास आया','नेट बॉक्स आपको रिसीव हुआ','2026-03-20 से','var(--hint)']])+
       '</div><div class="stickybar"><div class="cta primary" onclick="toast(\'वापसी शुरू — पिकअप टीम संपर्क करेगी\')">वापस करें</div><div class="cta outline" onclick="openSheet(\'confirmSheet\')">गुम हो गया</div></div>'+CONFIRM_SHEET(),
     idle_warn:()=>devHead('NB-IDLE-02')+'<div class="body pad gap12" style="padding-bottom:150px">'+
@@ -634,7 +634,7 @@
     lost:()=>{const d=(_lostMode==='declared');return devHead('NB-GUM-10')+'<div class="body pad gap12" style="padding-bottom:96px">'+
       '<div class="statusban" style="background:var(--bg-neg)"><div class="circ" style="background:var(--neg)">'+ICON.lost+'</div><div class="grow"><div class="t">'+(d?'गुम बताया गया है':'गुम पाया गया')+'</div><div class="s">अगले 30 दिनों में रिकवरी होगी</div></div></div>'+
       '<div class="card"><div class="bold" style="font-size:14px">क्या करें</div><div class="b13" style="margin-top:8px">अगले 30 दिनों में रिकवरी राशि वॉलेट या अगली पेमेंट से ली जाएगी। नेटबॉक्स वापस मिलने पर व्योम को वापस करें — रिकवरी रुक जाएगी और कटी राशि वापस मिलेगी।</div></div>'+
-      '<div class="card"><div class="lbl" style="margin-bottom:2px">कितनी रिकवरी होगी</div><div class="b12" style="margin-bottom:8px">अभी कुछ नहीं कटा — अगले 30 दिनों में वॉलेट या अगली पेमेंट से ली जाएगी</div><div class="semi" style="font-size:14px">कैरी शुल्क: <span class="num">₹200</span></div><div class="b12" style="margin-top:2px">100 दिन × ₹2/दिन = ₹200</div><div class="semi" style="font-size:14px;margin-top:12px">नुकसान वसूली: <span class="num">₹212</span></div><div class="b12" style="margin-top:2px">डिवाइस प्रकार: राउटर · उम्र: 44 महीने</div><div class="b12">36+ बैंड (20% रिकवरी) · ₹1,062 × 20% = ₹212</div></div>'+
+      '<div class="card"><div class="lbl" style="margin-bottom:2px">कितनी रिकवरी होगी</div><div class="b12" style="margin-bottom:8px">अभी कुछ नहीं कटा — अगले 30 दिनों में वॉलेट या अगली पेमेंट से ली जाएगी</div><div class="semi" style="font-size:14px">कैरी शुल्क: <span class="num">₹200</span></div><div class="b12" style="margin-top:2px">100 दिन × ₹2/दिन = ₹200</div><div class="semi" style="font-size:14px;margin-top:12px">नुकसान वसूली: <span class="num">₹212</span></div><div class="b12" style="margin-top:2px">डिवाइस प्रकार: राउटर · उम्र: 44 महीने</div><div class="b12">₹1,062 × 20% = ₹212</div></div>'+
       tl([[(d?'गुम बताया गया':'गुम पाया गया'),(d?'CSP ने गुम बताया — रिकवरी 30 दिन में':'रिकवरी 30 दिन में शुरू होगी'),'2026-06-25 से','var(--brand)'],['कनेक्शन हटा','Customer disconnected','2026-06-20 से','var(--hint)'],['आपके पास आया','नेट बॉक्स आपको रिसीव हुआ','2026-03-20 से','var(--hint)']])+
       '<div class="link" style="text-align:center" onclick="toast(\'सहायता — सपोर्ट से जुड़ रहे हैं\')">सहायता के लिए संपर्क करें</div>'+
       '</div><div class="stickywrap"><div class="ctahint">नेट बॉक्स मिल जाए तो वापस करें — रिकवरी रुक जाएगी, कोई पैसा नहीं कटेगा।</div><div class="cta primary" onclick="_returnCtx=\'lost\';go(\'returning\')">वापस करें</div></div>';},
@@ -655,7 +655,7 @@
     returning:()=>{var ag=(_returnCtx==='agent');return devHead(ag?(_agentBox||'NB-IDLE-01'):'NB-GUM-10')+'<div class="body pad gap12" style="padding-bottom:96px">'+
       '<div class="statusban" style="background:var(--bg-info)"><div class="circ" style="background:var(--info)">'+ICON.truck+'</div><div class="grow"><div class="t">वापस होने की प्रक्रिया में</div><div class="s">'+(ag?'व्योम एजेंट को सौंपें':'जल्द पिकअप होगा')+'</div></div></div>'+
       '<div class="card"><div class="bold" style="font-size:14px">क्या करें</div><div class="b13" style="margin-top:8px">'+(ag?'यह नेटबॉक्स व्योम एजेंट को सौंप दें। सौंपते ही वापसी पूरी हो जाएगी।':'नेट बॉक्स तैयार रखें। पिकअप टीम आपसे संपर्क करेगी।')+'</div><div class="b13" style="color:var(--warn);font-weight:700;margin-top:6px">वापस न करने पर गुम मार्क कर दिया जाएगा।</div></div>'+
-      (ag?'':'<div class="costcard"><div class="b12" style="text-transform:uppercase;letter-spacing:.04em">कितनी रिकवरी होगी</div><div class="bold" style="font-size:16px;margin-top:4px">नुकसान वसूली: <span class="num">₹212</span></div><div class="b12" style="margin-top:4px">डिवाइस प्रकार: राउटर<br>उम्र: 44 महीने (36+ बैंड)<br>₹1,062 × 20% = ₹212</div></div>')+
+      (ag?'':'<div class="costcard"><div class="b12" style="text-transform:uppercase;letter-spacing:.04em">कितनी रिकवरी होगी</div><div class="bold" style="font-size:16px;margin-top:4px">नुकसान वसूली: <span class="num">₹212</span></div><div class="b12" style="margin-top:4px">डिवाइस प्रकार: राउटर<br>उम्र: 44 महीने<br>₹1,062 × 20% = ₹212</div></div>')+
       tl(ag?[['वापसी में','एजेंट को सौंपना है','अभी','var(--info)'],['आपके पास आया','नेट बॉक्स आपको रिसीव हुआ','2026-03-20 से','var(--hint)']]:[['वापसी शुरू','नेट बॉक्स सही बताया — वापसी का अनुरोध','अभी','var(--brand)'],['गुम बताया गया','समय पर नहीं लौटाया','2026-06-25 से','var(--hint)'],['आपके पास आया','नेट बॉक्स आपको रिसीव हुआ','2026-03-20 से','var(--hint)']])+
       '</div><div class="stickybar"><div class="cta outline" onclick="'+(ag?'openSheet(\'confirmSheet\')':'toast(\'गुम मार्क — रिकवरी जारी रहेगी\')')+'">गुम हो गया</div></div>'+(ag?CONFIRM_SHEET():'');},
     retpending:()=>devHead(_agentBox||'NB-IDLE-01')+'<div class="body pad gap12" style="padding-bottom:96px">'+
@@ -678,7 +678,7 @@
     '<div class="badge80"><svg width="40" height="40" viewBox="0 0 24 24"><path d="M15.73 3H8.27L3 8.27v7.46L8.27 21h7.46L21 15.73V8.27L15.73 3zM12 17.3c-.72 0-1.3-.58-1.3-1.3s.58-1.3 1.3-1.3 1.3.58 1.3 1.3-.58 1.3-1.3 1.3zm1-4.3h-2V7h2v6z" fill="#D9008D"/></svg></div>'+
     '<div style="font-size:16px;font-weight:700;margin-top:16px;color:var(--text)">नेटबॉक्स गुम मार्क करने से पहले ध्यान से पढ़ें</div>'+
     '<div class="semi" style="font-size:14px;text-align:left;width:100%;margin-top:24px;color:var(--text)">अगले 30 दिनों में आपके वॉलेट से ₹1,888 रिकवर की जाएगी</div>'+
-    '<div class="breakbox" style="margin-top:4px"><div class="semi" style="font-size:14px;color:var(--text)">रिकवरी का ब्यौरा</div><div class="b12" style="margin-top:4px">डिवाइस प्रकार: ONT</div><div class="b12">उम्र: 3 महीने (0–12 बैंड)</div><div class="b12">₹1,888 × 100% = ₹1,888</div><div class="divider" style="margin:8px 0"></div><div class="bold red num" style="font-size:16px">₹1,888</div></div>'+
+    '<div class="breakbox" style="margin-top:4px"><div class="semi" style="font-size:14px;color:var(--text)">रिकवरी का डिटेल</div><div class="b12" style="margin-top:4px">डिवाइस प्रकार: ONT</div><div class="b12">उम्र: 3 महीने</div><div class="b12">₹1,888 × 100% = ₹1,888</div><div class="divider" style="margin:8px 0"></div><div class="bold red num" style="font-size:16px">₹1,888</div></div>'+
     '<div class="b12" style="margin-top:12px">रिकवरी वॉलेट से होगी। पैसे कम होने पर अगली पेमेंट में एडजस्ट होगी।</div>'+
     '<div class="b12 green" style="margin-top:4px">नेटबॉक्स लौटाने पर पूरे पैसे वापस हो जाएंगे।</div>'+
     '<div class="cta primary" style="width:100%;margin-top:16px" onclick="closeSheet(\'confirmSheet\');lostGo(\'declared\')">हाँ, गुम हो गया है</div>'+
