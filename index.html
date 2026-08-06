@@ -13,8 +13,8 @@
     --brand:#D9008D; --plum:#4A1535; --brand-tint:#FFE5F6;
     --app-bg:#FAF9FC; --surface:#FFFFFF; --subtle:#F1EDF7;
     --text:#161021; --text-2:#5C5570; --hint:#A7A1B2; --on-brand:#FFFFFF;
-    --pos:#008043; --neg:#D92130; --pending:#FF7F00; --warn:#B85C00; --info:#6D17CE;
-    --bg-neg:#FFE5E7; --bg-pos:#E7F3EA; --bg-info:#F1E5FF; --bg-warn:#FBF0DC;
+    --pos:#008043; --neg:#D92130; --pending:#E2B203; --warn:#372902; --info:#6D17CE;
+    --bg-neg:#FFE5E7; --bg-pos:#E7F3EA; --bg-info:#F1E5FF; --bg-warn:#FFE9A1;
     --stroke:#E8E4F0; --stroke-2:#D7D3E0;
     /* doc palette */
     --ground:#F7F4F9; --panel:#FFFFFF; --panel-2:#FBF9FC; --ink:#1A1220; --ink-2:#5C5570; --ink-3:#8B8398;
@@ -593,7 +593,7 @@
   /* ---------- data ---------- */
   const AUTO_LOST=[["NB-GUM-01","ONT","3 महीने · 0–12 बैंड (100%)","1,888","राउटर",false],["NB-GUM-02","ONT","30 महीने · 24–36 बैंड (60%)","1,133"],["NB-GUM-03","राउटर","8 महीने · 0–12 बैंड (100%)","1,062"],["NB-GUM-04","ONT","14 महीने · 12–24 बैंड (80%)","1,510"],["NB-GUM-05","राउटर","26 महीने · 24–36 बैंड (60%)","637"],["NB-GUM-06","राउटर","16 महीने · 12–24 बैंड (80%)","850"],["NB-GUM-07","ONT","40 महीने · 36+ बैंड (20%)","378"],["NB-GUM-08","ONT","5 महीने · 0–12 बैंड (100%)","1,888"],["NB-GUM-09","राउटर","6 महीने · 0–12 बैंड (100%)","1,062"],["NB-GUM-10","राउटर","44 महीने · 36+ बैंड (20%)","212"]];
   const AGENT=[["NB-IDLE-01","राउटर · 8 महीने · 0–12 बैंड (100%)"],["NB-IDLE-03","राउटर · 26 महीने · 24–36 बैंड (60%)"],["NB-CUST-02","ONT · 30 महीने · 24–36 बैंड (60%)"],["NB-CUST-01","ONT · 3 महीने · 0–12 बैंड (100%)"]];
-  const TOK=[["brandPrimary","#D9008D","CTA, accent, amounts"],["brandSecondary","#4A1535","app bar, dark surfaces"],["brandTint","#FFE5F6","Report badge bg"],["bgScreen","#FAF9FC","screen bg"],["bgSurface","#FFFFFF","cards"],["textPrimary","#161021","primary text"],["textSecondary","#5C5570","secondary text"],["stateNegative","#D92130","lost / red amount"],["statePositive","#008043","refund / recovered"],["statePending","#FF7F00","carry fee"],["stateWarning","#B85C00","agent / nudge"],["stateInfo","#6D17CE","returning / recovery"],["strokePrimary","#E8E4F0","borders, dividers"]];
+  const TOK=[["brandPrimary","#D9008D","CTA, accent, amounts"],["brandSecondary","#4A1535","app bar, dark surfaces"],["brandTint","#FFE5F6","Report badge bg"],["bgScreen","#FAF9FC","screen bg"],["bgSurface","#FFFFFF","cards"],["textPrimary","#161021","primary text"],["textSecondary","#5C5570","secondary text"],["stateNegative","#D92130","lost / red amount"],["statePositive","#008043","refund / recovered"],["warningAccent","#E2B203","carry fee · warning (Warning_300)"],["textOnWarning","#372902","text on warning surfaces"],["bgWarningSubtle","#FFE9A1","warning banner / carry-fee bg"],["stateInfo","#6D17CE","returning / recovery (Info_600)"],["strokePrimary","#E8E4F0","borders, dividers (stroke.default)"]];
 
   /* ---------- device page renderer ---------- */
   const back='<svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" fill="#161021"/></svg>';
@@ -754,16 +754,16 @@
   function tb(el){const b=el.nextElementSibling;b.style.display=b.style.display==='none'?'block':'none';}
   let tT;function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(tT);tT=setTimeout(()=>t.classList.remove('show'),2200);}
   /* home shows exactly ONE banner — the one that belongs to the active scenario */
-  const chevW='<svg width="20" height="20" viewBox="0 0 24 24"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z" fill="#B85C00"/></svg>';
+  const chevW='<svg width="20" height="20" viewBox="0 0 24 24"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z" fill="#372902"/></svg>';
   const chevG='<svg width="20" height="20" viewBox="0 0 24 24"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z" fill="#008043"/></svg>';
   const BANNERS={
-    agent:'<div class="banner" style="background:var(--bg-warn);border:1px solid rgba(184,92,0,.35)" onclick="openSheet(\'agentSheet\')"><div class="grow"><div class="bt">4 नेटबॉक्स वापसी में है</div><div class="bs">नेटबॉक्स वापस न करने पर उसे गुम मार्क कर दिया जाएगा।</div></div>'+chevW+'</div>',
-    prenudge:'<div class="banner" style="background:var(--bg-warn);border:1px solid rgba(184,92,0,.3)" onclick="go(\'blocker\')"><div class="grow"><div class="bt">10 नेटबॉक्स लौटाना बाकी</div><div class="bs">7 दिन में लौटा दें, नहीं तो गुम मान लिए जाएंगे।</div></div>'+chevW+'</div>',
+    agent:'<div class="banner" style="background:var(--bg-warn);border:1px solid rgba(226,178,3,.35)" onclick="openSheet(\'agentSheet\')"><div class="grow"><div class="bt">4 नेटबॉक्स वापसी में है</div><div class="bs">नेटबॉक्स वापस न करने पर उसे गुम मार्क कर दिया जाएगा।</div></div>'+chevW+'</div>',
+    prenudge:'<div class="banner" style="background:var(--bg-warn);border:1px solid rgba(226,178,3,.3)" onclick="go(\'blocker\')"><div class="grow"><div class="bt">10 नेटबॉक्स लौटाना बाकी</div><div class="bs">7 दिन में लौटा दें, नहीं तो गुम मान लिए जाएंगे।</div></div>'+chevW+'</div>',
     refund:'<div class="banner" style="background:var(--bg-pos);border:1px solid rgba(0,128,67,.3)" onclick="openSheet(\'refundSheet\')"><span class="bic" style="background:var(--pos);display:grid;place-items:center"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="#fff"/></svg></span><div class="grow"><div class="bt">NB-CUST-02 वापस मिल गया</div><div class="bs">इसके गुम होने पर जो पैसे कटे थे, वो वापस किए जा रहे हैं।</div></div>'+chevG+'</div>'
   };
   let _scenario='agent';
   function bannerHTML(s){
-    if(s==='prenudge'){var one=_lossN===1;return '<div class="banner" style="background:var(--bg-warn);border:1px solid rgba(184,92,0,.3)" onclick="'+(one?'openBreakdown()':'go(\'blocker\')')+'"><div class="grow"><div class="bt">'+_lossN+' नेटबॉक्स लौटाना बाकी</div><div class="bs">7 दिन में लौटा दें, नहीं तो '+(one?'गुम मान लिया जाएगा':'गुम मान लिए जाएंगे')+'।</div></div>'+chevW+'</div>';}
+    if(s==='prenudge'){var one=_lossN===1;return '<div class="banner" style="background:var(--bg-warn);border:1px solid rgba(226,178,3,.3)" onclick="'+(one?'openBreakdown()':'go(\'blocker\')')+'"><div class="grow"><div class="bt">'+_lossN+' नेटबॉक्स लौटाना बाकी</div><div class="bs">7 दिन में लौटा दें, नहीं तो '+(one?'गुम मान लिया जाएगा':'गुम मान लिए जाएंगे')+'।</div></div>'+chevW+'</div>';}
     return BANNERS[s]||BANNERS.agent;
   }
   function setScenario(s){_scenario=s;const el=document.getElementById('homeBanner');if(el)el.innerHTML=bannerHTML(s);}
