@@ -251,8 +251,8 @@
           </div></div>
         <div class="overlay" id="refundSheet"><div class="scrim" onclick="closeSheet('refundSheet')"></div>
           <div class="sheet"><div class="handle"></div><div class="inner" style="text-align:left">
-            <div class="h1" style="font-size:22px">NB-CUST-02 वापस मिल गया</div>
-            <div class="sub" style="margin-top:8px">इसके गुम होने पर जो पैसे कटे थे, वो आपको वापस किए जा रहे हैं।</div>
+            <div style="display:flex;gap:12px;align-items:flex-start"><div class="badge80" style="width:48px;height:48px;flex:0 0 auto;background:var(--bg-pos)"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="#008043"/></svg></div><div class="h1" style="font-size:22px">नेटबॉक्स वापस मिल गया</div></div>
+            <div class="sub" style="margin-top:12px">इसके गुम होने पर कटे पैसे आपके वॉलेट में वापस किए जा रहे हैं।</div>
             <div class="breakbox" style="margin-top:12px">
               <div style="display:flex"><div class="b13" style="flex:1">कुल रकम वापस</div><div class="bold green num" style="font-size:16px">₹1,500</div></div>
             </div>
@@ -726,8 +726,8 @@
   function openBreakdown(){if(_lossN===1){go('home');renderBreakSheet();openSheet('breakSheet');}else{go('breakdown');}}
   function renderBreakSheet(){var boxes=AUTO_LOST.slice(0,_lossN);
     document.getElementById('breakSheetInner').innerHTML=
-      '<div class="h1" style="font-size:22px">'+_lossN+' नेटबॉक्स गुम पाया गया</div>'+
-      '<div style="margin-top:8px"><span class="schip2 recovering"><span class="cdot"></span>रिकवरी जारी · अगले 30 दिन</span></div>'+
+      '<div style="display:flex;gap:12px;align-items:flex-start"><div class="badge80" style="width:48px;height:48px;flex:0 0 auto;background:var(--bg-warn)"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M15.73 3H8.27L3 8.27v7.46L8.27 21h7.46L21 15.73V8.27L15.73 3zM12 17.3c-.72 0-1.3-.58-1.3-1.3s.58-1.3 1.3-1.3 1.3.58 1.3 1.3-.58 1.3-1.3 1.3zm1-4.3h-2V7h2v6z" fill="#372902"/></svg></div><div class="h1" style="font-size:22px">'+_lossN+' नेटबॉक्स गुम पाया गया</div></div>'+
+      '<div class="sub" style="margin-top:12px">अगले 30 दिनों में ₹'+fmtN(lossTotal())+' रिकवर होगी।</div>'+
       '<div class="card listcard" style="margin-top:12px">'+boxes.map(function(r,i){return '<div class="row" onclick="closeSheet(\'breakSheet\');go(\'lost\')"><div class="grow"><div class="id">'+r[0]+'</div><div class="meta">'+(r[1]==='ONT'?'ONT':'राउटर')+' · '+r[2]+'</div></div><div class="amt">₹'+r[3]+'</div></div>'+(i<boxes.length-1?'<div class="divider"></div>':'');}).join('')+'</div>'+
       '<div class="totalrow" style="margin-top:8px"><div class="tl2">कुल रिकवरी</div><div class="tv">₹'+fmtN(lossTotal())+'</div></div>'+
       '<div class="b12 green" style="margin-top:12px">नेटबॉक्स लौटाने पर पूरे पैसे वापस हो जाएंगे।</div>'+
