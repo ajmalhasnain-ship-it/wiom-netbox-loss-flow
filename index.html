@@ -100,7 +100,7 @@
   .statusban{display:flex;align-items:center;gap:12px;border-radius:12px;padding:12px} .statusban .circ{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;flex:0 0 auto} .statusban .t{font-size:14px;font-weight:700;color:var(--text)} .statusban .s{font-size:12px;color:var(--text-2);margin-top:2px}
   .tl{display:flex;align-items:flex-start;gap:10px} .tl .tdot{width:10px;height:10px;border-radius:50%;margin-top:3px;flex:0 0 auto} .tl .grow{flex:1} .tl .tt{font-size:13px;font-weight:600;color:var(--text)} .tl .ts{font-size:11px;color:var(--text-2);margin-top:1px} .tl .td{font-size:12px;color:var(--text-2);white-space:nowrap}
   .statrow{display:flex;gap:12px} .stat{flex:1;background:var(--surface);border:1px solid var(--stroke);border-radius:12px;padding:14px} .stat .l{font-size:13px;color:var(--text-2)} .stat .v{font-size:20px;font-weight:700;font-family:var(--sans);margin-top:6px;color:var(--text)}
-  .banner{display:flex;align-items:center;gap:10px;border-radius:12px;padding:11px 12px;cursor:pointer} .banner .bic{width:26px;height:26px;border-radius:50%;flex:0 0 auto} .banner .grow{flex:1} .banner .bt{font-size:13px;font-weight:600;color:var(--text)} .banner .bs{font-size:11px;color:var(--text-2);margin-top:2px;line-height:1.4}
+  .banner{display:flex;align-items:center;gap:12px;border-radius:16px;padding:12px 16px;cursor:pointer} .banner .bic{width:26px;height:26px;border-radius:50%;flex:0 0 auto} .banner .grow{flex:1} .banner .bt{font-size:16px;font-weight:700;color:var(--warn);line-height:1.5} .banner .bs{font-size:14px;color:var(--warn);margin-top:4px;line-height:1.43}
   .blocker{align-items:center;justify-content:center;text-align:center;padding:0 32px} .blocker .warncirc{width:72px;height:72px;border-radius:50%;background:var(--neg);display:grid;place-items:center;margin-bottom:24px} .blocker .sub{margin-top:8px}
   .blocker .stickycta{box-shadow:0 6px 20px -6px rgba(217,0,141,.5);animation:hint 2.2s ease-in-out infinite}
   @keyframes hint{0%,100%{box-shadow:0 6px 18px -6px rgba(217,0,141,.4)}50%{box-shadow:0 8px 26px -4px rgba(217,0,141,.8)}}
@@ -755,16 +755,16 @@
   function tb(el){const b=el.nextElementSibling;b.style.display=b.style.display==='none'?'block':'none';}
   let tT;function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(tT);tT=setTimeout(()=>t.classList.remove('show'),2200);}
   /* home shows exactly ONE banner — the one that belongs to the active scenario */
-  const chevW='<svg width="20" height="20" viewBox="0 0 24 24"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z" fill="#372902"/></svg>';
+  const chevW='<svg width="20" height="20" viewBox="0 0 24 24"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z" fill="#352D42"/></svg>';
   const chevG='<svg width="20" height="20" viewBox="0 0 24 24"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z" fill="#008043"/></svg>';
   const BANNERS={
-    agent:'<div class="banner" style="background:var(--bg-warn);border:1px solid rgba(226,178,3,.35)" onclick="openSheet(\'agentSheet\')"><div class="grow"><div class="bt">4 नेटबॉक्स वापसी में है</div><div class="bs">नेटबॉक्स वापस न करने पर उसे गुम मार्क कर दिया जाएगा।</div></div>'+chevW+'</div>',
-    prenudge:'<div class="banner" style="background:var(--bg-warn);border:1px solid rgba(226,178,3,.3)" onclick="go(\'blocker\')"><div class="grow"><div class="bt">10 नेटबॉक्स लौटाना बाकी</div><div class="bs">7 दिन में लौटा दें, नहीं तो गुम मान लिए जाएंगे।</div></div>'+chevW+'</div>',
+    agent:'<div class="banner" style="background:var(--bg-warn);border:1px solid #E2B203" onclick="openSheet(\'agentSheet\')"><div class="grow"><div class="bt">4 नेटबॉक्स वापसी में है</div><div class="bs">नेटबॉक्स वापस न करने पर उसे गुम मार्क कर दिया जाएगा।</div></div>'+chevW+'</div>',
+    prenudge:'<div class="banner" style="background:var(--bg-warn);border:1px solid #E2B203" onclick="go(\'blocker\')"><div class="grow"><div class="bt">10 नेटबॉक्स लौटाना बाकी</div><div class="bs">7 दिन में लौटा दें, नहीं तो गुम मान लिए जाएंगे।</div></div>'+chevW+'</div>',
     refund:'<div class="banner" style="background:var(--bg-pos);border:1px solid rgba(0,128,67,.3)" onclick="openSheet(\'refundSheet\')"><span class="bic" style="background:var(--pos);display:grid;place-items:center"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="#fff"/></svg></span><div class="grow"><div class="bt">NB-CUST-02 वापस मिल गया</div><div class="bs">इसके गुम होने पर जो पैसे कटे थे, वो वापस किए जा रहे हैं।</div></div>'+chevG+'</div>'
   };
   let _scenario='agent';
   function bannerHTML(s){
-    if(s==='prenudge'){var one=_lossN===1;return '<div class="banner" style="background:var(--bg-warn);border:1px solid rgba(226,178,3,.3)" onclick="'+(one?'openBreakdown()':'go(\'blocker\')')+'"><div class="grow"><div class="bt">'+_lossN+' नेटबॉक्स लौटाना बाकी</div><div class="bs">7 दिन में लौटा दें, नहीं तो '+(one?'गुम मान लिया जाएगा':'गुम मान लिए जाएंगे')+'।</div></div>'+chevW+'</div>';}
+    if(s==='prenudge'){var one=_lossN===1;return '<div class="banner" style="background:var(--bg-warn);border:1px solid #E2B203" onclick="'+(one?'openBreakdown()':'go(\'blocker\')')+'"><div class="grow"><div class="bt">'+_lossN+' नेटबॉक्स लौटाना बाकी</div><div class="bs">7 दिन में लौटा दें, नहीं तो '+(one?'गुम मान लिया जाएगा':'गुम मान लिए जाएंगे')+'।</div></div>'+chevW+'</div>';}
     return BANNERS[s]||BANNERS.agent;
   }
   function setScenario(s){_scenario=s;const el=document.getElementById('homeBanner');if(el)el.innerHTML=bannerHTML(s);}
